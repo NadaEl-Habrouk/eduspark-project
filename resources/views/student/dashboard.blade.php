@@ -34,15 +34,11 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950 relative overflow-x-hidden">
 
-    <!-- Decorative Background Glows -->
     <div class="absolute top-0 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute top-1/3 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-    <!-- Header -->
     <header class="bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/80 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-            
-            <!-- Logo & Title Section -->
             <div class="flex items-center space-x-4 space-x-reverse" id="brandContainer">
                 <div class="inline-flex items-center justify-center w-12 h-12 bg-white border-2 border-emerald-500/40 rounded-full shadow-lg shadow-emerald-600/30 overflow-hidden transform hover:scale-105 transition-transform shrink-0">
                     <img src="{{ asset('images/logo.png') }}" alt="EduSpark Logo" class="w-full h-full object-cover rounded-full" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-2xl\'>⚡</span>';">
@@ -53,9 +49,7 @@
                 </div>
             </div>
 
-            <!-- Class Badge, Language Switcher & Logout Button -->
             <div class="flex items-center gap-3">
-                <!-- Language Toggle Button -->
                 <button onclick="toggleLanguage()" class="px-3 py-2 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/50 rounded-xl text-xs font-bold text-emerald-400 flex items-center gap-1.5 transition-all shadow-sm" title="تغيير اللغة / Change Language">
                     <span>🌐</span>
                     <span id="langButtonText">EN</span>
@@ -77,10 +71,7 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-8 z-10">
-        
-        <!-- Welcome Banner -->
         <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden glow-effect border-l-4 border-l-emerald-500">
             <div class="absolute top-0 right-0 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
             <div class="absolute bottom-0 left-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -92,7 +83,6 @@
                     <p id="bannerDesc" class="text-slate-300 text-sm leading-relaxed">اختر مسارك أدناه، وانخرط في الأنشطة التفاعلية لترفع نقاط فصلك وتؤكد تميزك كأحد نابغين مدرسة وي للتكنولوجيا التطبيقية.</p>
                 </div>
                 
-                <!-- Database Driven Stats Cards -->
                 <div class="bg-slate-900/90 border border-slate-700/60 rounded-2xl p-4 flex items-center justify-around text-center backdrop-blur-md shadow-inner">
                     <div>
                         <div class="text-2xl font-black text-amber-400 font-mono" id="userPoints">0</div>
@@ -107,26 +97,21 @@
             </div>
         </div>
 
-        <!-- Subjects Grid Section -->
         <div>
             <div class="flex items-center justify-between mb-6">
                 <h3 id="subjectsHeader" class="text-lg font-bold text-white flex items-center gap-2.5">
-    <span class="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl text-base border border-emerald-500/20">📚</span> 
-    <span id="subjectsHeaderText">المسارات التعليمية المتاحة اليوم</span>
-</h3>
+                    <span class="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl text-base border border-emerald-500/20">📚</span> 
+                    <span id="subjectsHeaderText">المسارات التعليمية المتاحة اليوم</span>
+                </h3>
                 <span id="subjectsSubHeader" class="text-xs text-slate-400 font-medium">اختر مساراً وابدأ التحدي الآن</span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                <!-- Card 1: Coding -->
                 <div onclick="selectSubject('coding')" class="glass-card rounded-3xl p-6 cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 shadow-xl relative overflow-hidden flex flex-col justify-between group hover:border-emerald-500/50">
                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-amber-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div>
                         <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-emerald-500/20">
-                                💻
-                            </div>
+                            <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-emerald-500/20">💻</div>
                             <span id="badge-coding" class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
                         </div>
                         <h4 id="card1Title" class="text-lg font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">تكنولوجيا وهندسة برمجيات</h4>
@@ -138,14 +123,11 @@
                     </div>
                 </div>
 
-                <!-- Card 2: Entrepreneurship -->
                 <div onclick="selectSubject('entrepreneurship')" class="glass-card rounded-3xl p-6 cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 shadow-xl relative overflow-hidden flex flex-col justify-between group hover:border-amber-500/50">
                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div>
                         <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-amber-500/10 text-amber-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-amber-500/20">
-                                💡
-                            </div>
+                            <div class="w-12 h-12 bg-amber-500/10 text-amber-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-amber-500/20">💡</div>
                             <span id="badge-entrepreneurship" class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
                         </div>
                         <h4 id="card2Title" class="text-lg font-bold text-white mb-2 group-hover:text-amber-300 transition-colors">ريادة الأعمال والابتكار الرقمي</h4>
@@ -157,14 +139,11 @@
                     </div>
                 </div>
 
-                <!-- Card 3: Core Subjects -->
                 <div onclick="selectSubject('core')" class="glass-card rounded-3xl p-6 cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 shadow-xl relative overflow-hidden flex flex-col justify-between group hover:border-sky-500/50">
                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-sky-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div>
                         <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-sky-500/10 text-sky-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-sky-500/20">
-                                📐
-                            </div>
+                            <div class="w-12 h-12 bg-sky-500/10 text-sky-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-sky-500/20">📐</div>
                             <span id="badge-core" class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
                         </div>
                         <h4 id="card3Title" class="text-lg font-bold text-white mb-2 group-hover:text-sky-300 transition-colors">العلوم المعرفية والأساسية</h4>
@@ -175,21 +154,16 @@
                         <span class="transform group-hover:-translate-x-1.5 transition-transform">←</span>
                     </div>
                 </div>
-
             </div>
         </div>
-
     </main>
 
-    <!-- Footer -->
     <footer class="mt-auto py-6 text-center border-t border-slate-900 text-xs text-slate-500 z-10" id="footerText">
         EduSpark Platform • WE Applied Technology Schools © <span id="dynamicYear"></span>
     </footer>
 
-    <!-- Scripts -->
     <script>
         @if(session('user_name'))
-            // قراءة اللغة المخزنة مسبقاً في المتصفح للحفاظ عليها، بدلاً من فرض 'ar' ثابتاً
             const savedLang = localStorage.getItem('eduspark_lang') || '{{ session("locale", "ar") }}';
             
             localStorage.setItem('eduspark_session', JSON.stringify({
@@ -288,7 +262,6 @@
             document.querySelectorAll('.cardActionText').forEach(el => el.innerText = t.cardAction);
             document.getElementById('footerText').innerHTML = `EduSpark Platform • WE Applied Technology Schools © <span id="dynamicYear">${new Date().getFullYear()}</span>`;
             
-            // تحديث نص زر التبديل
             document.getElementById('langButtonText').innerText = lang === 'ar' ? 'EN' : 'AR';
         }
 
@@ -316,7 +289,6 @@
             
             localStorage.setItem('eduspark_lang', newLang);
             
-            // تحديث الجلسة أيضاً إن وجدت
             try {
                 let session = JSON.parse(localStorage.getItem('eduspark_session')) || {};
                 session.language = newLang;
@@ -339,16 +311,20 @@
             
             applyTranslations(lang);
 
-            // جلب وعرض النقاط والأنشطة المنجزة للمستخدم الحالي من الـ localStorage
+            // الاعتماد المباشر على القيم القادمة من قاعدة البيانات (السيرفر) كمصدر أساسي
+            const serverPoints = "{{ $userPoints ?? 0 }}";
+            const serverCompleted = "{{ $completedCount ?? 0 }}";
             const userName = session.userName;
-            const userPoints = localStorage.getItem(`points_${userName}`) || '{{ $userPoints ?? 0 }}';
-            const userCompleted = localStorage.getItem(`completed_${userName}`) || '{{ $completedCount ?? 0 }}';
 
-            document.getElementById('userPoints').innerText = userPoints;
-            document.getElementById('completedCount').innerText = userCompleted;
+            // تحديث التخزين المحلي بقيم السيرفر لمنع اللخبطة
+            localStorage.setItem(`points_${userName}`, serverPoints);
+            localStorage.setItem(`completed_${userName}`, serverCompleted);
+
+            // عرض الأرقام الصحيحة في الصفحة
+            document.getElementById('userPoints').innerText = serverPoints;
+            document.getElementById('completedCount').innerText = serverCompleted;
         });
 
-        // الانتقال للراوت الصحيح للأنشطة مع تمرير الفئة والوضع الافتراضي solo
         function selectSubject(subjectKey) {
             localStorage.setItem('selected_subject', subjectKey);
             let mode = 'solo'; 
