@@ -36,9 +36,13 @@ ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -s 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -s 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
+# Configure Apache to listen on Railway's dynamic PORT environment variable
+RUN sed -i 's/Listen 80/Listen ${PORT:-80}/g' /etc/apache2/ports.conf
+RUN sed -i 's/:80/:${PORT:-80}/g' /etc/apache2/sites-available/000-default.conf
+
 # Enable Apache Rewrite Module
 RUN a2enmod rewrite
 
-# Expose port 80 and start Apache
+# Expose port and start Apache
 EXPOSE 80
-CMD ["apache2-foreground"]
+CMD apache2-foreground
