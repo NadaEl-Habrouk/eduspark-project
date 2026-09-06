@@ -56,7 +56,6 @@
 
             <!-- Class Badge, Language Switcher & Logout Button -->
             <div class="flex items-center gap-3">
-                <!-- Language Toggle Button -->
                 <button onclick="toggleLanguage()" class="px-3 py-2 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/50 rounded-xl text-xs font-bold text-emerald-400 flex items-center gap-1.5 transition-all shadow-sm" title="تغيير اللغة / Change Language">
                     <span>🌐</span>
                     <span id="langButtonText">EN</span>
@@ -128,7 +127,7 @@
                             <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-emerald-500/20">
                                 💻
                             </div>
-                            <span id="badge-coding" class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
+                            <span class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
                         </div>
                         <h4 id="card1Title" class="text-lg font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">تكنولوجيا وهندسة برمجيات</h4>
                         <p id="card1Desc" class="text-slate-400 text-sm leading-relaxed mb-6">تحديات هندسة الأكواد وحل المشكلات البرمجية لتعزيز مهاراتك التقنية في بناء الويب.</p>
@@ -147,7 +146,7 @@
                             <div class="w-12 h-12 bg-amber-500/10 text-amber-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-amber-500/20">
                                 💡
                             </div>
-                            <span id="badge-entrepreneurship" class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
+                            <span class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
                         </div>
                         <h4 id="card2Title" class="text-lg font-bold text-white mb-2 group-hover:text-amber-300 transition-colors">ريادة الأعمال والابتكار الرقمي</h4>
                         <p id="card2Desc" class="text-slate-400 text-sm leading-relaxed mb-6">دراسة نماذج الأعمال الناشئة وتحفيز التفكير النقدي لحل التحديات المجتمعية بابتكار.</p>
@@ -166,7 +165,7 @@
                             <div class="w-12 h-12 bg-sky-500/10 text-sky-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-sky-500/20">
                                 📐
                             </div>
-                            <span id="badge-core" class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
+                            <span class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
                         </div>
                         <h4 id="card3Title" class="text-lg font-bold text-white mb-2 group-hover:text-sky-300 transition-colors">العلوم المعرفية والأساسية</h4>
                         <p id="card3Desc" class="text-slate-400 text-sm leading-relaxed mb-6">مسابقات واختبارات تفاعلية ذكية لتطوير الحصيلة المعرفية في العلوم والرياضيات واللغات.</p>
@@ -222,10 +221,7 @@
                 card3Title: 'العلوم المعرفية والأساسية',
                 card3Desc: 'مسابقات واختبارات تفاعلية ذكية لتطوير الحصيلة المعرفية في العلوم والرياضيات واللغات.',
                 cardAction: 'ابدأ التحدي الآن',
-                badgeAvailable: 'متاح',
-                badgeCompleted: 'تم الإنجاز ✅',
-                logoutBtn: 'تسجيل خروج',
-                footer: 'EduSpark Platform • WE Applied Technology Schools © '
+                logoutBtn: 'تسجيل خروج'
             },
             en: {
                 dir: 'ltr',
@@ -246,10 +242,7 @@
                 card3Title: 'Core & Cognitive Sciences',
                 card3Desc: 'Gamified interactive quizzes to solidify knowledge in science, math, and languages.',
                 cardAction: 'Start Challenge Now',
-                badgeAvailable: 'Available',
-                badgeCompleted: 'Completed ✅',
-                logoutBtn: 'Logout',
-                footer: 'EduSpark Platform • WE Applied Technology Schools © '
+                logoutBtn: 'Logout'
             }
         };
 
@@ -337,25 +330,26 @@
             
             applyTranslations(lang);
 
-            // جلب القيم القادمة من قاعدة البيانات ومقارنتها بالسجلات المحلية بشكل دقيق
             const userName = session.userName;
+            
+            // قراءة القيم الحقيقية من الداتابيز
             let dbPoints = parseInt('{{ $userPoints ?? 0 }}');
             let dbCompleted = parseInt('{{ $completedCount ?? 0 }}');
 
-            let localPoints = parseInt(localStorage.getItem(`points_${userName}`)) || 0;
-            let localCompleted = parseInt(localStorage.getItem(`completed_${userName}`)) || 0;
+            // إذا كانت الداتابيز تسجل أصفاراً (فصل جديد)، نقوم بتثبيت الصفر محلياً لمنع أي بيانات قديمة
+            if (dbPoints === 0 && dbCompleted === 0) {
+                localStorage.setItem(`points_${userName}`, 0);
+                localStorage.setItem(`completed_${userName}`, 0);
+            }
 
-            let finalPoints = Math.max(dbPoints, localPoints);
-            let finalCompleted = Math.max(dbCompleted, localCompleted);
-
-            localStorage.setItem(`points_${userName}`, finalPoints);
-            localStorage.setItem(`completed_${userName}`, finalCompleted);
+            let finalPoints = parseInt(localStorage.getItem(`points_${userName}`)) || dbPoints;
+            let finalCompleted = parseInt(localStorage.getItem(`completed_${userName}`)) || dbCompleted;
 
             document.getElementById('userPoints').innerText = finalPoints;
             document.getElementById('completedCount').innerText = finalCompleted;
         });
 
-        // دالة لتحديث النقاط والأنشطة فور الإجابة الصحيحة
+        // دالة تحديث النقاط والأنشطة فور الإجابة الصحيحة
         function recordCorrectAnswer() {
             fetch('/student/leaderboard/update', {
                 method: 'POST',
