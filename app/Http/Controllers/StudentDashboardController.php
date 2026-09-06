@@ -33,21 +33,28 @@ class StudentDashboardController extends Controller
 
 public function updateLeaderboard(Request $request)
 {
-    $user = auth()->user();
+    $classCode = session('class_code');
 
-    // التأكد من إنشاء السجل أو تحديثه إذا كان موجوداً
+    if (!$classCode) {
+        return response()->json(['success' => false, 'message' => 'Unauthorized or no class code found'], 401);
+    }
+
+    // البحث والتحديث باستخدام كود الفصل الموجود في الـ Session
     $entry = Leaderboard::updateOrCreate(
-        ['user_id' => $user->id],
+        ['class_code' => $classCode],
         [
-            'points' => \DB::raw('points + 10'),    // زيادة النقاط (عدل القيمة حسب نظامك)
-            'completed' => \DB::raw('completed + 1') // زيادة عدد الأنشطة المكتملة
+            'points' => \DB::raw('COALESCE(points, 0) + 10'),
+            'completed_activities' => \DB::raw('COALESCE(completed_activities, 0) + 1')
         ]
     );
 
+    // إعادة تحميل السجل لجلب القيم الرقمية الحقيقية بدلاً من كائنات الـ DB raw
+    $entry->refresh();
+
     return response()->json([
         'success' => true,
-        'points' => $entry->points,
-        'completed' => $entry->completed
+        'points' => (int) $entry->points,
+        'completed' => (int) $entry->completed_activities
     ]);
 }
 }
