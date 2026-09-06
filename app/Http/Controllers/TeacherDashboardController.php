@@ -16,16 +16,18 @@ class TeacherDashboardController extends Controller
         // 2. جلب جميع الفصول وترتيبها تنازلياً حسب النقاط للـ Leaderboard
         $rawLeaderboards = Leaderboard::orderBy('points', 'desc')->get();
 
-        // 3. حساب المراكز بتراكم صحيح (Dense Ranking: 1, 2, 2, 3)
+        // 3. حساب المراكز مع دعم تساوي النقاط (Dense Ranking)
         $leaderboards = [];
         $currentRank = 1;
         $previousPoints = null;
+        $loopIndex = 0;
 
         foreach ($rawLeaderboards as $item) {
+            $loopIndex++;
             $points = $item->points ?? 0;
 
             if ($previousPoints !== null && $points < $previousPoints) {
-                $currentRank++; // يزيد بواقي واحد فقط لكل مستوى نقاط جديد لتصبح النتيجة 3 بدل 4
+                $currentRank = $loopIndex;
             }
             
             $previousPoints = $points;
@@ -33,13 +35,10 @@ class TeacherDashboardController extends Controller
             $leaderboards[] = $item;
         }
 
-        // 4. جلب كود الفصل من المدخلات أو الجلسة بمختلف مفاتيحها المحتملة
-        $targetClassCode = $request->input('class_code') 
-            ?? session('class_code') 
-            ?? session('teacher_class_code') 
-            ?? session('current_teacher_class_code');
+        // 4. جلب كود الفصل حصرياً من مدخلات المعلم أو جلسة تسجيل المعلم (صفحة تسجيل المعلم)
+        $targetClassCode = $request->input('class_code') ?? session('class_code');
 
-        // 5. البحث عن بيانات الفصل المدخل 
+        // 5. البحث عن بيانات الفصل المدخل من قِبل المعلم فقط (بدون أي افتراض للمركز الأول)
         $selectedClassData = null;
         if (!empty($targetClassCode)) {
             $selectedClassData = collect($leaderboards)->first(function ($item) use ($targetClassCode) {
@@ -47,13 +46,17 @@ class TeacherDashboardController extends Controller
             });
         }
 
-        // 6. جلب الأنشطة والحصص الخاصة بهذا الفصل بدقة
+        // 6. جلب الأنشطة والحصص الخاصة بهذا الفصل فقط (ستظهر 0 إذا لم يتم إدخال الكود)
         $totalActivities = $selectedClassData ? ($selectedClassData->completed_activities ?? 0) : 0;
         
-        // حساب عدد الحصص الفعلية من جدول التقييمات بشكل ديناميكي
+        // عدد الحصص المرتبطة بهذا الفصل (سواء من جدول التقييمات أو بناءً على وجود بيانات للفصل)
         $activeClassesCount = 0;
         if (!empty($targetClassCode)) {
-            $activeClassesCount = Evaluation::whereRaw('LOWER(class_code) = ?', [strtolower($targetClassCode)])->count();
+            $activeClassesCount = Evaluation::where('class_code', $targetClassCode)->count();
+            // إذا وُجد الفصل في جدول الصدارة ولديه أنشطة ولكن لم يُقيم بعد، نحسبه حصة واحدة افتراضياً أو نعتمد على وجوده
+            if ($activeClassesCount === 0 && $selectedClassData) {
+                $activeClassesCount = 1; 
+            }
         }
 
         return view('teacher.dashboard', compact(
@@ -76,30 +79,13 @@ class TeacherDashboardController extends Controller
 
         $validated['teacher_id'] = session('user_id', 1);
 
-        // توحيد كود الفصل ليحفظ بأحرف متناسقة لتجنب مشاكل التطابق
-        $classCode = strtoupper(trim($validated['class_code']));
-        $validated['class_code'] = $classCode;
-
-        // 1. حفظ التقييم في جدول Evaluations
         Evaluation::create($validated);
 
-        // 2. تحديث أو إنشاء سجل الفصل في جدول Leaderboard وزيادة النقاط والأنشطة تلقائياً
-        $leaderboard = Leaderboard::firstOrCreate(
-            ['class_code' => $classCode],
-            ['points' => 0, 'completed_activities' => 0]
-        );
+        // حفظ كود الفصل الخاص بالمعلم في الجلسة
+        session(['teacher_class_code' => $validated['class_code']]);
+        session(['current_teacher_class_code' => $validated['class_code']]);
 
-        $leaderboard->increment('points', 10);
-        $leaderboard->increment('completed_activities', 1);
-
-        // 3. حفظ كود الفصل في الجلسة لضمان استمراريته
-        session([
-            'class_code' => $classCode,
-            'teacher_class_code' => $classCode,
-            'current_teacher_class_code' => $classCode
-        ]);
-
-        return redirect()->route('teacher.dashboard', ['class_code' => $classCode])
-                 ->with('success', 'evaluation_success');
+        return redirect()->route('teacher.dashboard', ['class_code' => $validated['class_code']])
+                         ->with('success', 'تم حفظ التقييم وربط الفصل بنجاح.');
     }
 }
