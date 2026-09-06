@@ -25,6 +25,9 @@ WORKDIR /var/www/html
 # Copy existing application directory contents
 COPY . /var/www/html
 
+# Fix MPM conflict permanently by removing conflicting modules safely
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-enabled/mpm_worker.* || true
+
 # Install composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 
@@ -38,4 +41,4 @@ RUN a2enmod rewrite
 
 # Expose port 80 and start Apache
 EXPOSE 80
-CMD apache2-foreground
+CMD ["apache2-foreground"]
