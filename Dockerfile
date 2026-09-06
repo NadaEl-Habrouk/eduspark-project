@@ -35,5 +35,7 @@ RUN composer install --no-dev --optimize-autoloader
 # Expose port for Railway
 EXPOSE 8080
 
-# Start Laravel server overriding connection to use MySQL environment variables directly
-CMD php artisan config:clear && php artisan cache:clear && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
+# Start server forcing MySQL connection environment variables
+CMD php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
