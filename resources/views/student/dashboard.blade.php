@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title id="pageTitle">EduSpark</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -56,6 +55,7 @@
 
             <!-- Class Badge, Language Switcher & Logout Button -->
             <div class="flex items-center gap-3">
+                <!-- Language Toggle Button -->
                 <button onclick="toggleLanguage()" class="px-3 py-2 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/50 rounded-xl text-xs font-bold text-emerald-400 flex items-center gap-1.5 transition-all shadow-sm" title="تغيير اللغة / Change Language">
                     <span>🌐</span>
                     <span id="langButtonText">EN</span>
@@ -95,12 +95,12 @@
                 <!-- Database Driven Stats Cards -->
                 <div class="bg-slate-900/90 border border-slate-700/60 rounded-2xl p-4 flex items-center justify-around text-center backdrop-blur-md shadow-inner">
                     <div>
-                        <div class="text-2xl font-black text-amber-400 font-mono" id="userPoints">{{ $userPoints ?? 0 }}</div>
+                        <div class="text-2xl font-black text-amber-400 font-mono" id="userPoints">0</div>
                         <div class="text-[11px] text-slate-400 font-bold mt-0.5" id="pointsLabelText">نقاط الفصل 🏆</div>
                     </div>
                     <div class="w-px h-8 bg-slate-800"></div>
                     <div>
-                        <div class="text-2xl font-black text-emerald-400 font-mono" id="completedCount">{{ $completedCount ?? 0 }}</div>
+                        <div class="text-2xl font-black text-emerald-400 font-mono" id="completedCount">0</div>
                         <div class="text-[11px] text-slate-400 font-bold mt-0.5" id="completedLabelText">أنشطة منجزة ✨</div>
                     </div>
                 </div>
@@ -111,9 +111,9 @@
         <div>
             <div class="flex items-center justify-between mb-6">
                 <h3 id="subjectsHeader" class="text-lg font-bold text-white flex items-center gap-2.5">
-                    <span class="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl text-base border border-emerald-500/20">📚</span> 
-                    <span id="subjectsHeaderText">المسارات التعليمية المتاحة اليوم</span>
-                </h3>
+    <span class="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl text-base border border-emerald-500/20">📚</span> 
+    <span id="subjectsHeaderText">المسارات التعليمية المتاحة اليوم</span>
+</h3>
                 <span id="subjectsSubHeader" class="text-xs text-slate-400 font-medium">اختر مساراً وابدأ التحدي الآن</span>
             </div>
 
@@ -127,7 +127,7 @@
                             <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-emerald-500/20">
                                 💻
                             </div>
-                            <span class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
+                            <span id="badge-coding" class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
                         </div>
                         <h4 id="card1Title" class="text-lg font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">تكنولوجيا وهندسة برمجيات</h4>
                         <p id="card1Desc" class="text-slate-400 text-sm leading-relaxed mb-6">تحديات هندسة الأكواد وحل المشكلات البرمجية لتعزيز مهاراتك التقنية في بناء الويب.</p>
@@ -146,7 +146,7 @@
                             <div class="w-12 h-12 bg-amber-500/10 text-amber-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-amber-500/20">
                                 💡
                             </div>
-                            <span class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
+                            <span id="badge-entrepreneurship" class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
                         </div>
                         <h4 id="card2Title" class="text-lg font-bold text-white mb-2 group-hover:text-amber-300 transition-colors">ريادة الأعمال والابتكار الرقمي</h4>
                         <p id="card2Desc" class="text-slate-400 text-sm leading-relaxed mb-6">دراسة نماذج الأعمال الناشئة وتحفيز التفكير النقدي لحل التحديات المجتمعية بابتكار.</p>
@@ -165,7 +165,7 @@
                             <div class="w-12 h-12 bg-sky-500/10 text-sky-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-sky-500/20">
                                 📐
                             </div>
-                            <span class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
+                            <span id="badge-core" class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
                         </div>
                         <h4 id="card3Title" class="text-lg font-bold text-white mb-2 group-hover:text-sky-300 transition-colors">العلوم المعرفية والأساسية</h4>
                         <p id="card3Desc" class="text-slate-400 text-sm leading-relaxed mb-6">مسابقات واختبارات تفاعلية ذكية لتطوير الحصيلة المعرفية في العلوم والرياضيات واللغات.</p>
@@ -189,6 +189,7 @@
     <!-- Scripts -->
     <script>
         @if(session('user_name'))
+            // قراءة اللغة المخزنة مسبقاً في المتصفح للحفاظ عليها، بدلاً من فرض 'ar' ثابتاً
             const savedLang = localStorage.getItem('eduspark_lang') || '{{ session("locale", "ar") }}';
             
             localStorage.setItem('eduspark_session', JSON.stringify({
@@ -221,7 +222,10 @@
                 card3Title: 'العلوم المعرفية والأساسية',
                 card3Desc: 'مسابقات واختبارات تفاعلية ذكية لتطوير الحصيلة المعرفية في العلوم والرياضيات واللغات.',
                 cardAction: 'ابدأ التحدي الآن',
-                logoutBtn: 'تسجيل خروج'
+                badgeAvailable: 'متاح',
+                badgeCompleted: 'تم الإنجاز ✅',
+                logoutBtn: 'تسجيل خروج',
+                footer: 'EduSpark Platform • WE Applied Technology Schools © '
             },
             en: {
                 dir: 'ltr',
@@ -242,7 +246,10 @@
                 card3Title: 'Core & Cognitive Sciences',
                 card3Desc: 'Gamified interactive quizzes to solidify knowledge in science, math, and languages.',
                 cardAction: 'Start Challenge Now',
-                logoutBtn: 'Logout'
+                badgeAvailable: 'Available',
+                badgeCompleted: 'Completed ✅',
+                logoutBtn: 'Logout',
+                footer: 'EduSpark Platform • WE Applied Technology Schools © '
             }
         };
 
@@ -281,6 +288,7 @@
             document.querySelectorAll('.cardActionText').forEach(el => el.innerText = t.cardAction);
             document.getElementById('footerText').innerHTML = `EduSpark Platform • WE Applied Technology Schools © <span id="dynamicYear">${new Date().getFullYear()}</span>`;
             
+            // تحديث نص زر التبديل
             document.getElementById('langButtonText').innerText = lang === 'ar' ? 'EN' : 'AR';
         }
 
@@ -308,6 +316,7 @@
             
             localStorage.setItem('eduspark_lang', newLang);
             
+            // تحديث الجلسة أيضاً إن وجدت
             try {
                 let session = JSON.parse(localStorage.getItem('eduspark_session')) || {};
                 session.language = newLang;
@@ -330,53 +339,16 @@
             
             applyTranslations(lang);
 
+            // جلب وعرض النقاط والأنشطة المنجزة للمستخدم الحالي من الـ localStorage
             const userName = session.userName;
-            
-            // قراءة القيم الحقيقية من الداتابيز
-            let dbPoints = parseInt('{{ $userPoints ?? 0 }}');
-            let dbCompleted = parseInt('{{ $completedCount ?? 0 }}');
+            const userPoints = localStorage.getItem(`points_${userName}`) || '{{ $userPoints ?? 0 }}';
+            const userCompleted = localStorage.getItem(`completed_${userName}`) || '{{ $completedCount ?? 0 }}';
 
-            // إذا كانت الداتابيز تسجل أصفاراً (فصل جديد)، نقوم بتثبيت الصفر محلياً لمنع أي بيانات قديمة
-            if (dbPoints === 0 && dbCompleted === 0) {
-                localStorage.setItem(`points_${userName}`, 0);
-                localStorage.setItem(`completed_${userName}`, 0);
-            }
-
-            let finalPoints = parseInt(localStorage.getItem(`points_${userName}`)) || dbPoints;
-            let finalCompleted = parseInt(localStorage.getItem(`completed_${userName}`)) || dbCompleted;
-
-            document.getElementById('userPoints').innerText = finalPoints;
-            document.getElementById('completedCount').innerText = finalCompleted;
+            document.getElementById('userPoints').innerText = userPoints;
+            document.getElementById('completedCount').innerText = userCompleted;
         });
 
-        // دالة تحديث النقاط والأنشطة فور الإجابة الصحيحة
-        function recordCorrectAnswer() {
-            fetch('/student/leaderboard/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({})
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const sessionData = JSON.parse(localStorage.getItem('eduspark_session'));
-                    if(sessionData && sessionData.userName) {
-                        localStorage.setItem(`points_${sessionData.userName}`, data.points);
-                        localStorage.setItem(`completed_${sessionData.userName}`, data.completed_activities);
-                    }
-                    
-                    const pointsEl = document.getElementById('userPoints');
-                    const completedEl = document.getElementById('completedCount');
-                    if(pointsEl) pointsEl.innerText = data.points;
-                    if(completedEl) completedEl.innerText = data.completed_activities;
-                }
-            })
-            .catch(error => console.error('Error updating score:', error));
-        }
-
+        // الانتقال للراوت الصحيح للأنشطة مع تمرير الفئة والوضع الافتراضي solo
         function selectSubject(subjectKey) {
             localStorage.setItem('selected_subject', subjectKey);
             let mode = 'solo'; 
