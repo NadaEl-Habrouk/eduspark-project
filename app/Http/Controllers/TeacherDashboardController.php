@@ -79,18 +79,29 @@ class TeacherDashboardController extends Controller
         $validated['teacher_id'] = session('user_id', 1);
 
         // توحيد كود الفصل ليحفظ بأحرف متناسقة لتجنب مشاكل التطابق
-        $validated['class_code'] = strtoupper(trim($validated['class_code']));
+        $classCode = strtoupper(trim($validated['class_code']));
+        $validated['class_code'] = $classCode;
 
+        // 1. حفظ التقييم في جدول Evaluations
         Evaluation::create($validated);
 
-        // حفظ كود الفصل في الجلسة بالمفاتيح المتعددة لضمان استمراريته
+        // 2. تحديث أو إنشاء سجل الفصل في جدول Leaderboard وزيادة النقاط والأنشطة تلقائياً
+        $leaderboard = Leaderboard::firstOrCreate(
+            ['class_code' => $classCode],
+            ['points' => 0, 'completed_activities' => 0]
+        );
+
+        $leaderboard->increment('points', 10);
+        $leaderboard->increment('completed_activities', 1);
+
+        // 3. حفظ كود الفصل في الجلسة لضمان استمراريته
         session([
-            'class_code' => $validated['class_code'],
-            'teacher_class_code' => $validated['class_code'],
-            'current_teacher_class_code' => $validated['class_code']
+            'class_code' => $classCode,
+            'teacher_class_code' => $classCode,
+            'current_teacher_class_code' => $classCode
         ]);
 
-        return redirect()->route('teacher.dashboard', ['class_code' => $validated['class_code']])
+        return redirect()->route('teacher.dashboard', ['class_code' => $classCode])
                  ->with('success', 'evaluation_success');
     }
 }
