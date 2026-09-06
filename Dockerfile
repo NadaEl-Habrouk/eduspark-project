@@ -25,7 +25,11 @@ WORKDIR /var/www/html
 # Copy existing application directory contents
 COPY . /var/www/html
 
-# Copy composer dependencies if needed or install
+# Fix MPM conflict by disabling event/worker and enabling prefork
+RUN a2dismod mpm_event mpm_worker || true
+RUN a2enmod mpm_prefork
+
+# Copy composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 
 # Set Apache document root to Laravel public folder
