@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Leaderboard;
 use App\Models\Evaluation;
+use Illuminate\Support\Facades\Session;
 
 class TeacherDashboardController extends Controller
 {
@@ -16,29 +17,30 @@ class TeacherDashboardController extends Controller
         // 2. جلب جميع الفصول وترتيبها تنازلياً حسب النقاط للـ Leaderboard
         $rawLeaderboards = Leaderboard::orderBy('points', 'desc')->get();
 
-        // 3. حساب المراكز مع دعم تساوي النقاط (Dense Ranking)
+        // 3. تصحيح حساب المراكز مع دعم تساوي النقاط تماماً (Dense Ranking الصحيح)
         $leaderboards = [];
         $currentRank = 1;
         $previousPoints = null;
-        $loopIndex = 0;
+        $index = 0;
 
         foreach ($rawLeaderboards as $item) {
-            $loopIndex++;
             $points = $item->points ?? 0;
 
-            if ($previousPoints !== null && $points < $previousPoints) {
-                $currentRank = $loopIndex;
+            // إذا لم يكن هذا هو العنصر الأول وكانت نقاطه أقل من العنصر السابق، نزيد المركز بناءً على ترتيبه الفعلي
+            if ($index > 0 && $points < $previousPoints) {
+                $currentRank = $index + 1;
             }
             
             $previousPoints = $points;
             $item->calculated_rank = $currentRank;
             $leaderboards[] = $item;
+            $index++;
         }
 
-        // 4. جلب كود الفصل حصرياً من مدخلات المعلم أو جلسة تسجيل المعلم (صفحة تسجيل المعلم)
+        // 4. جلب كود الفصل حصرياً من مدخلات المعلم أو جلسة تسجيل المعلم
         $targetClassCode = $request->input('class_code') ?? session('class_code');
 
-        // 5. البحث عن بيانات الفصل المدخل من قِبل المعلم فقط (بدون أي افتراض للمركز الأول)
+        // 5. البحث عن بيانات الفصل المدخل من قِبل المعلم فقط
         $selectedClassData = null;
         if (!empty($targetClassCode)) {
             $selectedClassData = collect($leaderboards)->first(function ($item) use ($targetClassCode) {
@@ -46,14 +48,12 @@ class TeacherDashboardController extends Controller
             });
         }
 
-        // 6. جلب الأنشطة والحصص الخاصة بهذا الفصل فقط (ستظهر 0 إذا لم يتم إدخال الكود)
+        // 6. جلب الأنشطة والحصص الخاصة بهذا الفصل فقط
         $totalActivities = $selectedClassData ? ($selectedClassData->completed_activities ?? 0) : 0;
         
-        // عدد الحصص المرتبطة بهذا الفصل (سواء من جدول التقييمات أو بناءً على وجود بيانات للفصل)
         $activeClassesCount = 0;
         if (!empty($targetClassCode)) {
             $activeClassesCount = Evaluation::where('class_code', $targetClassCode)->count();
-            // إذا وُجد الفصل في جدول الصدارة ولديه أنشطة ولكن لم يُقيم بعد، نحسبه حصة واحدة افتراضياً أو نعتمد على وجوده
             if ($activeClassesCount === 0 && $selectedClassData) {
                 $activeClassesCount = 1; 
             }
@@ -85,7 +85,15 @@ class TeacherDashboardController extends Controller
         session(['teacher_class_code' => $validated['class_code']]);
         session(['current_teacher_class_code' => $validated['class_code']]);
 
+        // تحديد اللغة الحالية للصفحة (من الجلسة أو الافتراضي عربي)
+        $locale = Session::get('locale', 'ar');
+
+        // تجهيز رسالة النجاح باللغتين
+        $successMessage = ($locale === 'en') 
+            ? 'Evaluation saved and class linked successfully.' 
+            : 'تم حفظ التقييم وربط الفصل بنجاح.';
+
         return redirect()->route('teacher.dashboard', ['class_code' => $validated['class_code']])
-                         ->with('success', 'تم حفظ التقييم وربط الفصل بنجاح.');
+                     ->with('success', $successMessage);
     }
 }
