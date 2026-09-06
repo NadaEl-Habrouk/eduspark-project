@@ -194,9 +194,7 @@
 
             @if(session('success'))
                 <div id="evalToast" class="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold rounded-xl text-center">
-                    <span data-i18n="evalSuccess">
-                        {{ session('success') === 'evaluation_success' ? 'تم التقييم بنجاح' : session('success') }}
-                    </span>
+                    {{ session('success') }}
                 </div>
             @endif
         </div>
@@ -241,8 +239,7 @@
             labelClassCode: 'كود الفصل المستهدف',
             labelRating: 'تقييم الالتزام والتفاعل (من 5 نجوم)',
             labelNotes: 'ملاحظات المعلم المشرف',
-            submitBtn: 'حفظ وتقييم الحصة 📋',
-            evalSuccess: 'تم التقييم بنجاح'
+            submitBtn: 'حفظ وتقييم الحصة 📋'
         },
         en: {
             dir: 'ltr',
@@ -269,8 +266,7 @@
             labelClassCode: 'Target Class Code',
             labelRating: 'Commitment & Engagement Rating (Out of 5)',
             labelNotes: 'Supervisor Notes',
-            submitBtn: 'Save & Evaluate Class 📋',
-            evalSuccess: 'Evaluation completed successfully'
+            submitBtn: 'Save & Evaluate Class 📋'
         }
     };
 
@@ -299,6 +295,7 @@
             starContainer.className = isEn ? 'flex items-center space-x-2' : 'flex items-center space-x-2 space-x-reverse';
         }
 
+        // تحديث أزرار تبديل اللغة النشطة بصرياً
         const btnAr = document.getElementById('langArBtn');
         const btnEn = document.getElementById('langEnBtn');
         if (btnAr && btnEn) {
