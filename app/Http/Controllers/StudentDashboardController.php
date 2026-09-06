@@ -30,33 +30,24 @@ class StudentDashboardController extends Controller
             ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }
 
-    public function updateScore(Request $request)
-    {
-        $classCode = session('class_code');
 
-        if (!$classCode) {
-            return response()->json(['success' => false, 'message' => 'Class code not found'], 400);
-        }
+public function updateLeaderboard(Request $request)
+{
+    $user = auth()->user();
 
-        $leaderboard = Leaderboard::firstOrCreate(
-            ['class_code' => $classCode],
-            [
-                'points' => 0,
-                'completed_activities' => 0
-            ]
-        );
+    // التأكد من إنشاء السجل أو تحديثه إذا كان موجوداً
+    $entry = Leaderboard::updateOrCreate(
+        ['user_id' => $user->id],
+        [
+            'points' => \DB::raw('points + 10'),    // زيادة النقاط (عدل القيمة حسب نظامك)
+            'completed' => \DB::raw('completed + 1') // زيادة عدد الأنشطة المكتملة
+        ]
+    );
 
-        // زيادة النقاط والأنشطة بغض النظر عن القيمة الحالية
-        $leaderboard->increment('points', 10);
-        $leaderboard->increment('completed_activities', 1);
-
-        // تحديث الكائن للحصول على القيم الجديدة بدقة
-        $leaderboard->refresh();
-
-        return response()->json([
-            'success' => true,
-            'points' => (int)$leaderboard->points,
-            'completed_activities' => (int)$leaderboard->completed_activities
-        ]);
-    }
+    return response()->json([
+        'success' => true,
+        'points' => $entry->points,
+        'completed' => $entry->completed
+    ]);
+}
 }
