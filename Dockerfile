@@ -25,9 +25,10 @@ WORKDIR /var/www/html
 # Copy existing application directory contents
 COPY . /var/www/html
 
-# Set permissions for Laravel storage and cache directories
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Create SQLite database file just in case it falls back to it, and set permissions
+RUN mkdir -p /var/www/html/database && touch /var/www/html/database/database.sqlite
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
 
 # Install composer dependencies
 RUN composer install --no-dev --optimize-autoloader
@@ -35,5 +36,5 @@ RUN composer install --no-dev --optimize-autoloader
 # Expose port for Railway
 EXPOSE 8080
 
-# Clear config and cache on startup, then start server
+# Start Laravel built-in server
 CMD php artisan config:clear && php artisan cache:clear && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
