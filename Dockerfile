@@ -25,8 +25,9 @@ WORKDIR /var/www/html
 # Copy existing application directory contents
 COPY . /var/www/html
 
-# Fix MPM conflict permanently by removing conflicting modules safely
-RUN rm -f /etc/apache2/mods-enabled/mpm_event.load /etc/apache2/mods-enabled/mpm_event.conf /etc/apache2/mods-enabled/mpm_worker.load /etc/apache2/mods-enabled/mpm_worker.conf
+# Fix MPM conflict permanently using a2dismod and ensuring only prefork is active
+RUN a2dismod mpm_event mpm_worker || true
+RUN a2enmod mpm_prefork
 
 # Install composer dependencies
 RUN composer install --no-dev --optimize-autoloader
