@@ -30,31 +30,33 @@ class StudentDashboardController extends Controller
             ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }
 
+    public function updateScore(Request $request)
+    {
+        $classCode = session('class_code');
 
-public function updateLeaderboard(Request $request)
-{
-    $classCode = session('class_code');
+        if (!$classCode) {
+            return response()->json(['success' => false, 'message' => 'Class code not found'], 400);
+        }
 
-    if (!$classCode) {
-        return response()->json(['success' => false, 'message' => 'Unauthorized or no class code found'], 401);
+        $leaderboard = Leaderboard::firstOrCreate(
+            ['class_code' => $classCode],
+            [
+                'points' => 0,
+                'completed_activities' => 0
+            ]
+        );
+
+        // زيادة النقاط والأنشطة بغض النظر عن القيمة الحالية
+        $leaderboard->increment('points', 10);
+        $leaderboard->increment('completed_activities', 1);
+
+        // تحديث الكائن للحصول على القيم الجديدة بدقة
+        $leaderboard->refresh();
+
+        return response()->json([
+            'success' => true,
+            'points' => (int)$leaderboard->points,
+            'completed_activities' => (int)$leaderboard->completed_activities
+        ]);
     }
-
-    // البحث والتحديث باستخدام كود الفصل الموجود في الـ Session
-    $entry = Leaderboard::updateOrCreate(
-        ['class_code' => $classCode],
-        [
-            'points' => \DB::raw('COALESCE(points, 0) + 10'),
-            'completed_activities' => \DB::raw('COALESCE(completed_activities, 0) + 1')
-        ]
-    );
-
-    // إعادة تحميل السجل لجلب القيم الرقمية الحقيقية بدلاً من كائنات الـ DB raw
-    $entry->refresh();
-
-    return response()->json([
-        'success' => true,
-        'points' => (int) $entry->points,
-        'completed' => (int) $entry->completed_activities
-    ]);
-}
 }
