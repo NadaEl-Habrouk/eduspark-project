@@ -37,6 +37,8 @@ Route::middleware(['web'])->prefix('student')->name('student.')->group(function 
     
     // مسار إرسال وإلغاء/حفظ الإجابة
     Route::post('/activity/{id}/submit', [ActivityController::class, 'submitAnswer'])->name('activity.submit');
+    
+    Route::post('/leaderboard/update', [StudentDashboardController::class, 'updateScore'])->name('leaderboard.update');
 });
 
 // 3. Teacher Dashboard Routes

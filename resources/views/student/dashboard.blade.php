@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title id="pageTitle">EduSpark</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -95,12 +96,12 @@
                 <!-- Database Driven Stats Cards -->
                 <div class="bg-slate-900/90 border border-slate-700/60 rounded-2xl p-4 flex items-center justify-around text-center backdrop-blur-md shadow-inner">
                     <div>
-                        <div class="text-2xl font-black text-amber-400 font-mono" id="userPoints">0</div>
+                        <div class="text-2xl font-black text-amber-400 font-mono" id="userPoints">{{ $userPoints ?? 0 }}</div>
                         <div class="text-[11px] text-slate-400 font-bold mt-0.5" id="pointsLabelText">نقاط الفصل 🏆</div>
                     </div>
                     <div class="w-px h-8 bg-slate-800"></div>
                     <div>
-                        <div class="text-2xl font-black text-emerald-400 font-mono" id="completedCount">0</div>
+                        <div class="text-2xl font-black text-emerald-400 font-mono" id="completedCount">{{ $completedCount ?? 0 }}</div>
                         <div class="text-[11px] text-slate-400 font-bold mt-0.5" id="completedLabelText">أنشطة منجزة ✨</div>
                     </div>
                 </div>
@@ -111,9 +112,9 @@
         <div>
             <div class="flex items-center justify-between mb-6">
                 <h3 id="subjectsHeader" class="text-lg font-bold text-white flex items-center gap-2.5">
-    <span class="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl text-base border border-emerald-500/20">📚</span> 
-    <span id="subjectsHeaderText">المسارات التعليمية المتاحة اليوم</span>
-</h3>
+                    <span class="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl text-base border border-emerald-500/20">📚</span> 
+                    <span id="subjectsHeaderText">المسارات التعليمية المتاحة اليوم</span>
+                </h3>
                 <span id="subjectsSubHeader" class="text-xs text-slate-400 font-medium">اختر مساراً وابدأ التحدي الآن</span>
             </div>
 
@@ -189,7 +190,6 @@
     <!-- Scripts -->
     <script>
         @if(session('user_name'))
-            // قراءة اللغة المخزنة مسبقاً في المتصفح للحفاظ عليها، بدلاً من فرض 'ar' ثابتاً
             const savedLang = localStorage.getItem('eduspark_lang') || '{{ session("locale", "ar") }}';
             
             localStorage.setItem('eduspark_session', JSON.stringify({
@@ -288,7 +288,6 @@
             document.querySelectorAll('.cardActionText').forEach(el => el.innerText = t.cardAction);
             document.getElementById('footerText').innerHTML = `EduSpark Platform • WE Applied Technology Schools © <span id="dynamicYear">${new Date().getFullYear()}</span>`;
             
-            // تحديث نص زر التبديل
             document.getElementById('langButtonText').innerText = lang === 'ar' ? 'EN' : 'AR';
         }
 
@@ -316,7 +315,6 @@
             
             localStorage.setItem('eduspark_lang', newLang);
             
-            // تحديث الجلسة أيضاً إن وجدت
             try {
                 let session = JSON.parse(localStorage.getItem('eduspark_session')) || {};
                 session.language = newLang;
@@ -339,16 +337,50 @@
             
             applyTranslations(lang);
 
-            // جلب وعرض النقاط والأنشطة المنجزة للمستخدم الحالي من الـ localStorage
+            // جلب البيانات من الداتابيز مباشرة، مع حفظها وتحديثها محلياً
             const userName = session.userName;
-            const userPoints = localStorage.getItem(`points_${userName}`) || '{{ $userPoints ?? 0 }}';
-            const userCompleted = localStorage.getItem(`completed_${userName}`) || '{{ $completedCount ?? 0 }}';
+            const dbPoints = '{{ $userPoints ?? 0 }}';
+            const dbCompleted = '{{ $completedCount ?? 0 }}';
+
+            // دمج القيمة القادمة من الداتابيز مع التخزين المحلي لتفادي أي تصفير غير مرغوب
+            const userPoints = Math.max(parseInt(localStorage.getItem(`points_${userName}`) || 0), parseInt(dbPoints));
+            const userCompleted = Math.max(parseInt(localStorage.getItem(`completed_${userName}`) || 0), parseInt(dbCompleted));
+
+            localStorage.setItem(`points_${userName}`, userPoints);
+            localStorage.setItem(`completed_${userName}`, userCompleted);
 
             document.getElementById('userPoints').innerText = userPoints;
             document.getElementById('completedCount').innerText = userCompleted;
         });
 
-        // الانتقال للراوت الصحيح للأنشطة مع تمرير الفئة والوضع الافتراضي solo
+        // دالة لتحديث النقاط والأنشطة فور الإجابة الصحيحة
+        function recordCorrectAnswer() {
+            fetch('/student/leaderboard/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const sessionData = JSON.parse(localStorage.getItem('eduspark_session'));
+                    if(sessionData && sessionData.userName) {
+                        localStorage.setItem(`points_${sessionData.userName}`, data.points);
+                        localStorage.setItem(`completed_${sessionData.userName}`, data.completed_activities);
+                    }
+                    
+                    const pointsEl = document.getElementById('userPoints');
+                    const completedEl = document.getElementById('completedCount');
+                    if(pointsEl) pointsEl.innerText = data.points;
+                    if(completedEl) completedEl.innerText = data.completed_activities;
+                }
+            })
+            .catch(error => console.error('Error updating score:', error));
+        }
+
         function selectSubject(subjectKey) {
             localStorage.setItem('selected_subject', subjectKey);
             let mode = 'solo'; 

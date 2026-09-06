@@ -29,7 +29,7 @@ class StudentDashboardController extends Controller
         return view('student.dashboard', compact('userPoints', 'completedCount'));
     }
 
-    // ⭐ إضافة هذه الدالة لتحديث النقاط والأنشطة للفصل عند إنهاء النشاط
+    // دالة لتحديث النقاط والأنشطة للفصل عند إنهاء النشاط
     public function updateScore(Request $request)
     {
         $classCode = session('class_code');
