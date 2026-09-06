@@ -81,15 +81,15 @@
                     <p id="bannerDesc" class="text-slate-300 text-sm leading-relaxed">اختر مسارك أدناه، وانخرط في الأنشطة التفاعلية لترفع نقاط فصلك وتؤكد تميزك كأحد نابغين مدرسة وي للتكنولوجيا التطبيقية.</p>
                 </div>
                 
-                <!-- عرض القيم بوضوح مع ضمان التعامل مع الصفر (0) -->
+                <!-- عرض الأرقام القادمة من الباك إند مباشرة -->
                 <div class="bg-slate-900/90 border border-slate-700/60 rounded-2xl p-4 flex items-center justify-around text-center backdrop-blur-md shadow-inner">
                     <div>
-                        <div class="text-2xl font-black text-amber-400 font-mono" id="userPoints">{{ isset($userPoints) ? $userPoints : 0 }}</div>
+                        <div class="text-2xl font-black text-amber-400 font-mono" id="userPoints">{{ $userPoints ?? 0 }}</div>
                         <div class="text-[11px] text-slate-400 font-bold mt-0.5" id="pointsLabelText">نقاط الفصل 🏆</div>
                     </div>
                     <div class="w-px h-8 bg-slate-800"></div>
                     <div>
-                        <div class="text-2xl font-black text-emerald-400 font-mono" id="completedCount">{{ isset($completedCount) ? $completedCount : 0 }}</div>
+                        <div class="text-2xl font-black text-emerald-400 font-mono" id="completedCount">{{ $completedCount ?? 0 }}</div>
                         <div class="text-[11px] text-slate-400 font-bold mt-0.5" id="completedLabelText">أنشطة منجزة ✨</div>
                     </div>
                 </div>
@@ -170,7 +170,7 @@
 
         document.getElementById('dynamicYear').innerText = new Date().getFullYear();
 
-        // تحديث تلقائي عند الرجوع للصفحة من الذاكرة المؤقتة (Cache)
+        // حل مشكلة تعليق الأرقام عند الرجوع للصفحة من الـ Cache للمتصفح
         window.addEventListener('pageshow', function (event) {
             if (event.persisted) {
                 window.location.reload();
