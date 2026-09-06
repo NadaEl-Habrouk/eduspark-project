@@ -189,6 +189,7 @@
             
             document.title = t.title;
 
+            // تحديث العناصر الثابتة التي تحمل data-i18n
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (t[key]) {
@@ -278,50 +279,6 @@
             document.getElementById('attemptsDisplay').innerText = t.attemptsLeft(remainingAttempts);
         }
 
-        // 🌟 دالة إرسال النقاط وتحديثها في قاعدة البيانات السيرفر عند الإجابة الصحيحة
-function updateScoreOnServer(questionId) {
-    fetch("{{ route('student.leaderboard.update') }}", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({ question_id: questionId })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if(data.success) {
-            // تحديث النقاط على الشاشة فوراً
-            const pointsEl = document.getElementById('userPoints');
-            if (pointsEl) {
-                pointsEl.innerText = data.points;
-            }
-
-            // تحديث عدد الأنشطة المنجزة على الشاشة فوراً
-            const completedEl = document.getElementById('completedCount');
-            if (completedEl && data.completed_activities !== undefined) {
-                completedEl.innerText = data.completed_activities;
-            }
-        }
-    })
-    .catch(error => console.error('Error recording score:', error));
-}            fetch("{{ route('student.leaderboard.update') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ question_id: questionId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.success) {
-                    console.log('Points recorded in DB successfully. Current points:', data.points);
-                }
-            })
-            .catch(error => console.error('Error recording score:', error));
-        }
-
         function handleMainAction() {
             const t = pageTranslations[currentLang] || pageTranslations['ar'];
 
@@ -351,8 +308,21 @@ function updateScoreOnServer(questionId) {
                 toast.className = 'p-4 rounded-2xl text-sm font-semibold transition-all bg-emerald-500/20 border border-emerald-500/40 text-emerald-300';
                 toast.innerText = t.correctFeedback;
 
-                // استدعاء دالة تحديث النقاط في السيرفر والحفاظ على التصميم
-                updateScoreOnServer(currentQ.id);
+                fetch("{{ route('student.leaderboard.update') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ question_id: currentQ.id })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        console.log('Points recorded in DB successfully.');
+                    }
+                })
+                .catch(error => console.error('Error recording score:', error));
 
                 finishQuestionState();
             } else {

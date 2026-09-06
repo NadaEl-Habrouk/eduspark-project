@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" id="htmlRoot" class="dark">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,24 +21,18 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-        }
-
+        body { font-family: 'Cairo', sans-serif; }
         .glass-card {
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
-
         .glow-effect {
             box-shadow: 0 0 40px -10px rgba(16, 185, 129, 0.15);
         }
     </style>
 </head>
-
-<body
-    class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950 relative overflow-x-hidden">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950 relative overflow-x-hidden">
 
     <div class="absolute top-0 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute top-1/3 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -47,41 +40,29 @@
     <header class="bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/80 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
             <div class="flex items-center space-x-4 space-x-reverse" id="brandContainer">
-                <div
-                    class="inline-flex items-center justify-center w-12 h-12 bg-white border-2 border-emerald-500/40 rounded-full shadow-lg shadow-emerald-600/30 overflow-hidden transform hover:scale-105 transition-transform shrink-0">
-                    <img src="{{ asset('images/logo.png') }}" alt="EduSpark Logo"
-                        class="w-full h-full object-cover rounded-full"
-                        onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-2xl\'>⚡</span>';">
+                <div class="inline-flex items-center justify-center w-12 h-12 bg-white border-2 border-emerald-500/40 rounded-full shadow-lg shadow-emerald-600/30 overflow-hidden transform hover:scale-105 transition-transform shrink-0">
+                    <img src="{{ asset('images/logo.png') }}" alt="EduSpark Logo" class="w-full h-full object-cover rounded-full" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-2xl\'>⚡</span>';">
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="h-4 w-px bg-slate-700/60 hidden sm:block"></div>
-                    <p class="text-xs text-slate-300 font-semibold tracking-wide" id="studentGreeting">أهلاً بك يا بطل
-                    </p>
+                    <p class="text-xs text-slate-300 font-semibold tracking-wide" id="studentGreeting">أهلاً بك يا بطل</p>
                 </div>
             </div>
 
             <div class="flex items-center gap-3">
-                <button onclick="toggleLanguage()"
-                    class="px-3 py-2 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/50 rounded-xl text-xs font-bold text-emerald-400 flex items-center gap-1.5 transition-all shadow-sm"
-                    title="تغيير اللغة / Change Language">
+                <button onclick="toggleLanguage()" class="px-3 py-2 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/50 rounded-xl text-xs font-bold text-emerald-400 flex items-center gap-1.5 transition-all shadow-sm" title="تغيير اللغة / Change Language">
                     <span>🌐</span>
                     <span id="langButtonText">EN</span>
                 </button>
 
-                <div
-                    class="bg-slate-800/80 border border-slate-700/50 px-3.5 py-2 rounded-xl text-xs font-bold text-amber-400 flex items-center gap-2 shadow-sm">
+                <div class="bg-slate-800/80 border border-slate-700/50 px-3.5 py-2 rounded-xl text-xs font-bold text-amber-400 flex items-center gap-2 shadow-sm">
                     <span id="badgeClassCode" class="text-white font-mono tracking-wider">--</span>
                 </div>
                 <form action="{{ route('logout') }}" method="POST" class="inline">
                     @csrf
-                    <button type="submit"
-                        class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 active:bg-amber-500 text-white rounded-xl transition-all duration-300 border border-emerald-500/40 shadow-lg shadow-emerald-600/30 active:shadow-amber-500/40 flex items-center gap-2 group"
-                        id="logoutBtn" title="تسجيل الخروج">
-                        <svg class="w-4 h-4 text-white transition-transform group-hover:-translate-x-0.5" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
-                            </path>
+                    <button type="submit" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 active:bg-amber-500 text-white rounded-xl transition-all duration-300 border border-emerald-500/40 shadow-lg shadow-emerald-600/30 active:shadow-amber-500/40 flex items-center gap-2 group" id="logoutBtn" title="تسجيل الخروج">
+                        <svg class="w-4 h-4 text-white transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                         </svg>
                         <span class="text-white text-xs font-semibold" data-i18n="logoutBtn">تسجيل خروج</span>
                     </button>
@@ -91,130 +72,86 @@
     </header>
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-8 z-10">
-        <div
-            class="glass-card rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden glow-effect border-l-4 border-l-emerald-500">
-            <div class="absolute top-0 right-0 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none">
-            </div>
-            <div class="absolute bottom-0 left-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none">
-            </div>
-
+        <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden glow-effect border-l-4 border-l-emerald-500">
+            <div class="absolute top-0 right-0 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            
             <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
                 <div class="md:col-span-2">
-                    <span id="bannerTag"
-                        class="px-3 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold rounded-full inline-block mb-3">Your
-                        first step in self-learning starts here 🚀</span>
-                    <h1 id="bannerTitle" class="text-2xl sm:text-3xl font-black text-white leading-tight mb-2">مدرس
-                        الحصة غايب؟ استغل وقتك الذكي وابدأ رحلة التطوير!</h1>
-                    <p id="bannerDesc" class="text-slate-300 text-sm leading-relaxed">اختر مسارك أدناه، وانخرط في
-                        الأنشطة التفاعلية لترفع نقاط فصلك وتؤكد تميزك كأحد نابغين مدرسة وي للتكنولوجيا التطبيقية.</p>
+                    <span id="bannerTag" class="px-3 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold rounded-full inline-block mb-3">Your first step in self-learning starts here 🚀</span>
+                    <h1 id="bannerTitle" class="text-2xl sm:text-3xl font-black text-white leading-tight mb-2">مدرس الحصة غايب؟ استغل وقتك الذكي وابدأ رحلة التطوير!</h1>
+                    <p id="bannerDesc" class="text-slate-300 text-sm leading-relaxed">اختر مسارك أدناه، وانخرط في الأنشطة التفاعلية لترفع نقاط فصلك وتؤكد تميزك كأحد نابغين مدرسة وي للتكنولوجيا التطبيقية.</p>
                 </div>
-
-                <div
-                    class="bg-slate-900/90 border border-slate-700/60 rounded-2xl p-4 flex items-center justify-around text-center backdrop-blur-md shadow-inner">
-                    <div>
-                        <!-- تأكد أن id="userPoints" موجود هنا لكي يتحدث تلقائياً -->
-                        <div class="text-2xl font-black text-amber-400 font-mono" id="userPoints">
-                            {{ (int) ($userPoints ?? 0) }}</div>
-                        <div class="text-[11px] text-slate-400 font-bold mt-0.5" id="pointsLabelText">نقاط الفصل 🏆
-                        </div>
-                    </div>
-                    <div class="w-px h-8 bg-slate-800"></div>
-                    <div>
-                        <!-- تأكد أن id="completedCount" موجود هنا لتحديث الأنشطة المنجزة -->
-                        <div class="text-2xl font-black text-emerald-400 font-mono" id="completedCount">
-                            {{ (int) ($completedCount ?? 0) }}</div>
-                        <div class="text-[11px] text-slate-400 font-bold mt-0.5" id="completedLabelText">أنشطة منجزة ✨
-                        </div>
-                    </div>
-                </div>
+                
+                <div class="bg-slate-900/90 border border-slate-700/60 rounded-2xl p-4 flex items-center justify-around text-center backdrop-blur-md shadow-inner">
+    <div>
+        <!-- تأكد أن id="userPoints" موجود هنا لكي يتحدث تلقائياً -->
+        <div class="text-2xl font-black text-amber-400 font-mono" id="userPoints">{{ (int)($userPoints ?? 0) }}</div>
+        <div class="text-[11px] text-slate-400 font-bold mt-0.5" id="pointsLabelText">نقاط الفصل 🏆</div>
+    </div>
+    <div class="w-px h-8 bg-slate-800"></div>
+    <div>
+        <!-- تأكد أن id="completedCount" موجود هنا لتحديث الأنشطة المنجزة -->
+        <div class="text-2xl font-black text-emerald-400 font-mono" id="completedCount">{{ (int)($completedCount ?? 0) }}</div>
+        <div class="text-[11px] text-slate-400 font-bold mt-0.5" id="completedLabelText">أنشطة منجزة ✨</div>
+    </div>
+</div>
             </div>
         </div>
 
         <div>
             <div class="flex items-center justify-between mb-6">
                 <h3 id="subjectsHeader" class="text-lg font-bold text-white flex items-center gap-2.5">
-                    <span
-                        class="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl text-base border border-emerald-500/20">📚</span>
+                    <span class="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl text-base border border-emerald-500/20">📚</span> 
                     <span id="subjectsHeaderText">المسارات التعليمية المتاحة اليوم</span>
                 </h3>
-                <span id="subjectsSubHeader" class="text-xs text-slate-400 font-medium">اختر مساراً وابدأ التحدي
-                    الآن</span>
+                <span id="subjectsSubHeader" class="text-xs text-slate-400 font-medium">اختر مساراً وابدأ التحدي الآن</span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div onclick="selectSubject('coding')"
-                    class="glass-card rounded-3xl p-6 cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 shadow-xl relative overflow-hidden flex flex-col justify-between group hover:border-emerald-500/50">
-                    <div
-                        class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-amber-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                    </div>
+                <div onclick="selectSubject('coding')" class="glass-card rounded-3xl p-6 cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 shadow-xl relative overflow-hidden flex flex-col justify-between group hover:border-emerald-500/50">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-amber-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div>
                         <div class="flex items-center justify-between mb-4">
-                            <div
-                                class="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-emerald-500/20">
-                                💻</div>
-                            <span id="badge-coding"
-                                class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
+                            <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-emerald-500/20">💻</div>
+                            <span id="badge-coding" class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
                         </div>
-                        <h4 id="card1Title"
-                            class="text-lg font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">
-                            تكنولوجيا وهندسة برمجيات</h4>
-                        <p id="card1Desc" class="text-slate-400 text-sm leading-relaxed mb-6">تحديات هندسة الأكواد وحل
-                            المشكلات البرمجية لتعزيز مهاراتك التقنية في بناء الويب.</p>
+                        <h4 id="card1Title" class="text-lg font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">تكنولوجيا وهندسة برمجيات</h4>
+                        <p id="card1Desc" class="text-slate-400 text-sm leading-relaxed mb-6">تحديات هندسة الأكواد وحل المشكلات البرمجية لتعزيز مهاراتك التقنية في بناء الويب.</p>
                     </div>
-                    <div
-                        class="flex items-center justify-between pt-4 border-t border-slate-800/80 text-sm font-bold text-emerald-400 group-hover:text-emerald-300">
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-800/80 text-sm font-bold text-emerald-400 group-hover:text-emerald-300">
                         <span class="cardActionText">ابدأ التحدي الآن</span>
                         <span class="transform group-hover:-translate-x-1.5 transition-transform">←</span>
                     </div>
                 </div>
 
-                <div onclick="selectSubject('entrepreneurship')"
-                    class="glass-card rounded-3xl p-6 cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 shadow-xl relative overflow-hidden flex flex-col justify-between group hover:border-amber-500/50">
-                    <div
-                        class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                    </div>
+                <div onclick="selectSubject('entrepreneurship')" class="glass-card rounded-3xl p-6 cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 shadow-xl relative overflow-hidden flex flex-col justify-between group hover:border-amber-500/50">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div>
                         <div class="flex items-center justify-between mb-4">
-                            <div
-                                class="w-12 h-12 bg-amber-500/10 text-amber-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-amber-500/20">
-                                💡</div>
-                            <span id="badge-entrepreneurship"
-                                class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
+                            <div class="w-12 h-12 bg-amber-500/10 text-amber-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-amber-500/20">💡</div>
+                            <span id="badge-entrepreneurship" class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
                         </div>
-                        <h4 id="card2Title"
-                            class="text-lg font-bold text-white mb-2 group-hover:text-amber-300 transition-colors">ريادة
-                            الأعمال والابتكار الرقمي</h4>
-                        <p id="card2Desc" class="text-slate-400 text-sm leading-relaxed mb-6">دراسة نماذج الأعمال
-                            الناشئة وتحفيز التفكير النقدي لحل التحديات المجتمعية بابتكار.</p>
+                        <h4 id="card2Title" class="text-lg font-bold text-white mb-2 group-hover:text-amber-300 transition-colors">ريادة الأعمال والابتكار الرقمي</h4>
+                        <p id="card2Desc" class="text-slate-400 text-sm leading-relaxed mb-6">دراسة نماذج الأعمال الناشئة وتحفيز التفكير النقدي لحل التحديات المجتمعية بابتكار.</p>
                     </div>
-                    <div
-                        class="flex items-center justify-between pt-4 border-t border-slate-800/80 text-sm font-bold text-amber-400 group-hover:text-amber-300">
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-800/80 text-sm font-bold text-amber-400 group-hover:text-amber-300">
                         <span class="cardActionText">ابدأ التحدي الآن</span>
                         <span class="transform group-hover:-translate-x-1.5 transition-transform">←</span>
                     </div>
                 </div>
 
-                <div onclick="selectSubject('core')"
-                    class="glass-card rounded-3xl p-6 cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 shadow-xl relative overflow-hidden flex flex-col justify-between group hover:border-sky-500/50">
-                    <div
-                        class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-sky-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                    </div>
+                <div onclick="selectSubject('core')" class="glass-card rounded-3xl p-6 cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 shadow-xl relative overflow-hidden flex flex-col justify-between group hover:border-sky-500/50">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-sky-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div>
                         <div class="flex items-center justify-between mb-4">
-                            <div
-                                class="w-12 h-12 bg-sky-500/10 text-sky-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-sky-500/20">
-                                📐</div>
-                            <span id="badge-core"
-                                class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
+                            <div class="w-12 h-12 bg-sky-500/10 text-sky-400 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner border border-sky-500/20">📐</div>
+                            <span id="badge-core" class="text-[11px] px-3 py-1 rounded-full bg-slate-800 text-slate-400 font-bold border border-slate-700/60">متاح</span>
                         </div>
-                        <h4 id="card3Title"
-                            class="text-lg font-bold text-white mb-2 group-hover:text-sky-300 transition-colors">العلوم
-                            المعرفية والأساسية</h4>
-                        <p id="card3Desc" class="text-slate-400 text-sm leading-relaxed mb-6">مسابقات واختبارات تفاعلية
-                            ذكية لتطوير الحصيلة المعرفية في العلوم والرياضيات واللغات.</p>
+                        <h4 id="card3Title" class="text-lg font-bold text-white mb-2 group-hover:text-sky-300 transition-colors">العلوم المعرفية والأساسية</h4>
+                        <p id="card3Desc" class="text-slate-400 text-sm leading-relaxed mb-6">مسابقات واختبارات تفاعلية ذكية لتطوير الحصيلة المعرفية في العلوم والرياضيات واللغات.</p>
                     </div>
-                    <div
-                        class="flex items-center justify-between pt-4 border-t border-slate-800/80 text-sm font-bold text-sky-400 group-hover:text-sky-300">
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-800/80 text-sm font-bold text-sky-400 group-hover:text-sky-300">
                         <span class="cardActionText">ابدأ التحدي الآن</span>
                         <span class="transform group-hover:-translate-x-1.5 transition-transform">←</span>
                     </div>
@@ -230,7 +167,7 @@
     <script>
         @if(session('user_name'))
             const savedLang = localStorage.getItem('eduspark_lang') || '{{ session("locale", "ar") }}';
-
+            
             localStorage.setItem('eduspark_session', JSON.stringify({
                 role: "{{ session('role') }}",
                 userName: "{{ session('user_name') }}",
@@ -295,12 +232,12 @@
         function applyTranslations(lang) {
             const t = dashboardTranslations[lang];
             const htmlRoot = document.getElementById('htmlRoot');
-
-            if (htmlRoot) {
+            
+            if(htmlRoot) {
                 htmlRoot.setAttribute('lang', lang);
                 htmlRoot.setAttribute('dir', t.dir);
             }
-
+            
             document.title = t.title;
             document.getElementById('studentGreeting').innerText = t.greeting(getUserName());
             document.getElementById('badgeClassCode').innerText = getClassCode() || 'Class: CSA3';
@@ -326,7 +263,7 @@
 
             document.querySelectorAll('.cardActionText').forEach(el => el.innerText = t.cardAction);
             document.getElementById('footerText').innerHTML = `EduSpark Platform • WE Applied Technology Schools © <span id="dynamicYear">${new Date().getFullYear()}</span>`;
-
+            
             document.getElementById('langButtonText').innerText = lang === 'ar' ? 'EN' : 'AR';
         }
 
@@ -334,7 +271,7 @@
             try {
                 const session = JSON.parse(localStorage.getItem('eduspark_session'));
                 return session ? session.userName : 'بطل';
-            } catch (e) {
+            } catch(e) {
                 return 'بطل';
             }
         }
@@ -343,7 +280,7 @@
             try {
                 const session = JSON.parse(localStorage.getItem('eduspark_session'));
                 return session ? session.classCode : '';
-            } catch (e) {
+            } catch(e) {
                 return '';
             }
         }
@@ -351,29 +288,29 @@
         function toggleLanguage() {
             const currentLang = localStorage.getItem('eduspark_lang') || 'ar';
             const newLang = currentLang === 'ar' ? 'en' : 'ar';
-
+            
             localStorage.setItem('eduspark_lang', newLang);
-
+            
             try {
                 let session = JSON.parse(localStorage.getItem('eduspark_session')) || {};
                 session.language = newLang;
                 localStorage.setItem('eduspark_session', JSON.stringify(session));
-            } catch (e) { }
+            } catch(e) {}
 
             applyTranslations(newLang);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             const session = JSON.parse(localStorage.getItem('eduspark_session'));
-
+            
             if (!session || session.role !== 'student') {
-                window.location.href = "{{ route('login') }}";
+                window.location.href = "{{ route('login') }}"; 
                 return;
             }
 
             const lang = session.language || localStorage.getItem('eduspark_lang') || 'ar';
             localStorage.setItem('eduspark_lang', lang);
-
+            
             applyTranslations(lang);
         });
 
@@ -386,10 +323,9 @@
 
         function selectSubject(subjectKey) {
             localStorage.setItem('selected_subject', subjectKey);
-            let mode = 'solo';
+            let mode = 'solo'; 
             window.location.href = `/student/activity/${subjectKey}/${mode}`;
         }
     </script>
 </body>
-
 </html>

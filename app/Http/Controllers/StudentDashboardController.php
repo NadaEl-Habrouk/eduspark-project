@@ -3,51 +3,58 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Leaderboard;
+use App\Models\Leaderboard; // استدعاء موديل الـ Leaderboard
 
 class StudentDashboardController extends Controller
 {
     public function index()
-{
-    $user = auth()->user();
-    $classCode = $user->class_code ?? 'GENERAL_CLASS';
+    {
+        // 1. جلب اسم الطالب وكود الفصل الحالي من الـ Session
+        $userName = session('user_name');
+        $classCode = session('class_code');
 
-    // جلب أو إنشاء سجل المتصدرين لهذا الفصل ليبدأ دائماً من 0
-    $leaderboard = Leaderboard::firstOrCreate(
-        ['class_code' => $classCode],
-        [
-            'points' => 0,
-            'completed_activities' => 0
-        ]
-    );
+        // إذا لم يكن هناك تسجيل دخول، حوّله لصفحة اللوجن
+        if (!$userName || !$classCode) {
+            return redirect()->route('login');
+        }
 
-    return view('student.dashboard', compact('leaderboard'));
-}
+        // 2. البحث في جدول leaderboards عن بيانات الفصل الخاص بالطالب
+        $leaderboard = Leaderboard::where('class_code', $classCode)->first();
 
-   public function updateScore(Request $request)
-{
-    // افترض أن الطالب لديه كود فصل مخزن في جدول المستخدمين، أو حدد كود افتراضي
-    $user = auth()->user();
-    $classCode = $user->class_code ?? 'GENERAL_CLASS'; 
+        // 3. استخراج النقاط والأنشطة المنجزة للفصل (وإن لم يوجد سجل، يتم تعيينها بـ 0)
+        $userPoints = $leaderboard ? $leaderboard->points : 0;
+        $completedCount = $leaderboard ? $leaderboard->completed_activities : 0;
 
-    // البحث عن سجل الفصل أو إنشائه تلقائياً بـ 0 نقاط إذا لم يكن موجوداً
-    $leaderboard = Leaderboard::firstOrCreate(
-        ['class_code' => $classCode],
-        [
-            'points' => 0,
-            'completed_activities' => 0
-        ]
-    );
+        // 4. إرسال البيانات لصفحة الـ Blade
+        return view('student.dashboard', compact('userPoints', 'completedCount'));
+    }
 
-    // زيادة النقاط والأنشطة المنجزة
-    $leaderboard->points += 10; // أو عدد النقاط المخصصة للسؤال
-    $leaderboard->completed_activities += 1;
-    $leaderboard->save();
+    // ⭐ إضافة هذه الدالة لتحديث النقاط والأنشطة للفصل عند إنهاء النشاط
+    public function updateScore(Request $request)
+    {
+        $classCode = session('class_code');
 
-    return response()->json([
-        'success' => true,
-        'points' => $leaderboard->points,
-        'completed_activities' => $leaderboard->completed_activities
-    ]);
-}
+        if (!$classCode) {
+            return response()->json(['success' => false, 'message' => 'Class code not found'], 400);
+        }
+
+        // جلب سجل الفصل أو إنشاؤه تلقائياً إذا لم يكن موجوداً
+        $leaderboard = Leaderboard::firstOrCreate(
+            ['class_code' => $classCode],
+            [
+                'points' => 0,
+                'completed_activities' => 0
+            ]
+        );
+
+        // زيادة النقاط بمقدار 10 وزيادة عدد الأنشطة المنجزة بواقع 1
+        $leaderboard->increment('points', 10);
+        $leaderboard->increment('completed_activities', 1);
+
+        return response()->json([
+            'success' => true,
+            'points' => $leaderboard->points,
+            'completed_activities' => $leaderboard->completed_activities
+        ]);
+    }
 }
