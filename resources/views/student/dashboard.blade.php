@@ -337,20 +337,22 @@
             
             applyTranslations(lang);
 
-            // جلب البيانات من الداتابيز مباشرة، مع حفظها وتحديثها محلياً
+            // جلب القيم القادمة من قاعدة البيانات ومقارنتها بالسجلات المحلية بشكل دقيق
             const userName = session.userName;
-            const dbPoints = '{{ $userPoints ?? 0 }}';
-            const dbCompleted = '{{ $completedCount ?? 0 }}';
+            let dbPoints = parseInt('{{ $userPoints ?? 0 }}');
+            let dbCompleted = parseInt('{{ $completedCount ?? 0 }}');
 
-            // دمج القيمة القادمة من الداتابيز مع التخزين المحلي لتفادي أي تصفير غير مرغوب
-            const userPoints = Math.max(parseInt(localStorage.getItem(`points_${userName}`) || 0), parseInt(dbPoints));
-            const userCompleted = Math.max(parseInt(localStorage.getItem(`completed_${userName}`) || 0), parseInt(dbCompleted));
+            let localPoints = parseInt(localStorage.getItem(`points_${userName}`)) || 0;
+            let localCompleted = parseInt(localStorage.getItem(`completed_${userName}`)) || 0;
 
-            localStorage.setItem(`points_${userName}`, userPoints);
-            localStorage.setItem(`completed_${userName}`, userCompleted);
+            let finalPoints = Math.max(dbPoints, localPoints);
+            let finalCompleted = Math.max(dbCompleted, localCompleted);
 
-            document.getElementById('userPoints').innerText = userPoints;
-            document.getElementById('completedCount').innerText = userCompleted;
+            localStorage.setItem(`points_${userName}`, finalPoints);
+            localStorage.setItem(`completed_${userName}`, finalCompleted);
+
+            document.getElementById('userPoints').innerText = finalPoints;
+            document.getElementById('completedCount').innerText = finalCompleted;
         });
 
         // دالة لتحديث النقاط والأنشطة فور الإجابة الصحيحة
