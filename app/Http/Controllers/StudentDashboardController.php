@@ -30,33 +30,30 @@ class StudentDashboardController extends Controller
             ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }
 
-    public function updateScore(Request $request)
-    {
-        $classCode = session('class_code');
+   public function updateScore(Request $request)
+{
+    // افترض أن الطالب لديه كود فصل مخزن في جدول المستخدمين، أو حدد كود افتراضي
+    $user = auth()->user();
+    $classCode = $user->class_code ?? 'GENERAL_CLASS'; 
 
-        if (!$classCode) {
-            return response()->json(['success' => false, 'message' => 'Class code not found'], 400);
-        }
+    // البحث عن سجل الفصل أو إنشائه تلقائياً بـ 0 نقاط إذا لم يكن موجوداً
+    $leaderboard = Leaderboard::firstOrCreate(
+        ['class_code' => $classCode],
+        [
+            'points' => 0,
+            'completed_activities' => 0
+        ]
+    );
 
-        $leaderboard = Leaderboard::firstOrCreate(
-            ['class_code' => $classCode],
-            [
-                'points' => 0,
-                'completed_activities' => 0
-            ]
-        );
+    // زيادة النقاط والأنشطة المنجزة
+    $leaderboard->points += 10; // أو عدد النقاط المخصصة للسؤال
+    $leaderboard->completed_activities += 1;
+    $leaderboard->save();
 
-        // زيادة النقاط والأنشطة بغض النظر عن القيمة الحالية
-        $leaderboard->increment('points', 10);
-        $leaderboard->increment('completed_activities', 1);
-
-        // تحديث الكائن للحصول على القيم الجديدة بدقة
-        $leaderboard->refresh();
-
-        return response()->json([
-            'success' => true,
-            'points' => (int)$leaderboard->points,
-            'completed_activities' => (int)$leaderboard->completed_activities
-        ]);
-    }
+    return response()->json([
+        'success' => true,
+        'points' => $leaderboard->points,
+        'completed_activities' => $leaderboard->completed_activities
+    ]);
+}
 }
