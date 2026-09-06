@@ -135,7 +135,7 @@
                                     @elseif($rank === 3)
                                         <span class="px-2.5 py-1 bg-amber-700/20 text-amber-600 border border-amber-700/30 rounded-lg text-xs font-bold" data-i18n="rank3">🥉 المركز الثالث</span>
                                     @else
-                                        <span class="px-2.5 py-1 bg-slate-800 text-slate-300 rounded-lg text-xs font-bold">#{{ $rank }}</span>
+                                        <span class="px-2.5 py-1 bg-slate-800 text-slate-300 rounded-lg text-xs font-bold"><span data-i18n="rankPrefix">#</span>{{ $rank }}</span>
                                     @endif
                                 </td>
                                 <td class="py-3 px-4 font-mono font-bold text-white">{{ $item->class_code ?? $item->code }}</td>
@@ -231,6 +231,7 @@
             rank1: '🥇 المركز الأول',
             rank2: '🥈 المركز الثاني',
             rank3: '🥉 المركز الثالث',
+            rankPrefix: '#',
             activitiesWord: 'نشاط',
             pointsWord: 'نقطة',
             noData: 'لا توجد بيانات متاحة حالياً',
@@ -258,6 +259,7 @@
             rank1: '🥇 1st Place',
             rank2: '🥈 2nd Place',
             rank3: '🥉 3rd Place',
+            rankPrefix: '#',
             activitiesWord: 'Activities',
             pointsWord: 'Points',
             noData: 'No data available at the moment',
