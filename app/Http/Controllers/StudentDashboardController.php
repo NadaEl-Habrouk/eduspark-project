@@ -16,13 +16,18 @@ class StudentDashboardController extends Controller
             return redirect()->route('login');
         }
 
-        // جلب البيانات من جدول الـ Leaderboard الخاص بفصل الطالب
+        // جلب البيانات من جدول الـ Leaderboard الخاص بفصل الطالب مباشرة
         $leaderboard = Leaderboard::where('class_code', $classCode)->first();
 
-        $userPoints = $leaderboard ? $leaderboard->points : 0;
-        $completedCount = $leaderboard ? $leaderboard->completed_activities : 0;
+        $userPoints = $leaderboard ? (int)$leaderboard->points : 0;
+        $completedCount = $leaderboard ? (int)$leaderboard->completed_activities : 0;
 
-        return view('student.dashboard', compact('userPoints', 'completedCount'));
+        // إرجاع الصفحة مع منع التخزين المؤقت (Cache) لضمان تحديث الأرقام فوراً
+        return response()
+            ->view('student.dashboard', compact('userPoints', 'completedCount'))
+            ->header('Cache-Control', 'no-store, no-cache, must-validate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }
 
     public function updateScore(Request $request)
@@ -41,13 +46,17 @@ class StudentDashboardController extends Controller
             ]
         );
 
+        // زيادة النقاط والأنشطة بغض النظر عن القيمة الحالية
         $leaderboard->increment('points', 10);
         $leaderboard->increment('completed_activities', 1);
 
+        // تحديث الكائن للحصول على القيم الجديدة بدقة
+        $leaderboard->refresh();
+
         return response()->json([
             'success' => true,
-            'points' => $leaderboard->points,
-            'completed_activities' => $leaderboard->completed_activities
+            'points' => (int)$leaderboard->points,
+            'completed_activities' => (int)$leaderboard->completed_activities
         ]);
     }
 }

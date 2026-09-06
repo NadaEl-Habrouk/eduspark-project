@@ -85,12 +85,12 @@
                 
                 <div class="bg-slate-900/90 border border-slate-700/60 rounded-2xl p-4 flex items-center justify-around text-center backdrop-blur-md shadow-inner">
                     <div>
-                        <div class="text-2xl font-black text-amber-400 font-mono" id="userPoints">0</div>
+                        <div class="text-2xl font-black text-amber-400 font-mono" id="userPoints">{{ (int)($userPoints ?? 0) }}</div>
                         <div class="text-[11px] text-slate-400 font-bold mt-0.5" id="pointsLabelText">نقاط الفصل 🏆</div>
                     </div>
                     <div class="w-px h-8 bg-slate-800"></div>
                     <div>
-                        <div class="text-2xl font-black text-emerald-400 font-mono" id="completedCount">0</div>
+                        <div class="text-2xl font-black text-emerald-400 font-mono" id="completedCount">{{ (int)($completedCount ?? 0) }}</div>
                         <div class="text-[11px] text-slate-400 font-bold mt-0.5" id="completedLabelText">أنشطة منجزة ✨</div>
                     </div>
                 </div>
@@ -310,19 +310,13 @@
             localStorage.setItem('eduspark_lang', lang);
             
             applyTranslations(lang);
+        });
 
-            // الاعتماد المباشر على القيم القادمة من قاعدة البيانات (السيرفر) كمصدر أساسي
-            const serverPoints = "{{ $userPoints ?? 0 }}";
-            const serverCompleted = "{{ $completedCount ?? 0 }}";
-            const userName = session.userName;
-
-            // تحديث التخزين المحلي بقيم السيرفر لمنع اللخبطة
-            localStorage.setItem(`points_${userName}`, serverPoints);
-            localStorage.setItem(`completed_${userName}`, serverCompleted);
-
-            // عرض الأرقام الصحيحة في الصفحة
-            document.getElementById('userPoints').innerText = serverPoints;
-            document.getElementById('completedCount').innerText = serverCompleted;
+        // منع التخزين المؤقت وإجبار التحديث عند الرجوع للوحة التحكم
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+                window.location.reload();
+            }
         });
 
         function selectSubject(subjectKey) {
