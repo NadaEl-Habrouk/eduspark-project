@@ -17,24 +17,23 @@ class TeacherDashboardController extends Controller
         // 2. جلب جميع الفصول وترتيبها تنازلياً حسب النقاط للـ Leaderboard
         $rawLeaderboards = Leaderboard::orderBy('points', 'desc')->get();
 
-        // 3. تصحيح حساب المراكز مع دعم تساوي النقاط تماماً (Dense Ranking الصحيح)
+        // 3. حساب المراكز (Competition Ranking: 1, 2, 2, 3) بحيث يأخذ الفصل التالي المركز الثالث
         $leaderboards = [];
         $currentRank = 1;
         $previousPoints = null;
-        $index = 0;
+        $loopIndex = 0;
 
         foreach ($rawLeaderboards as $item) {
+            $loopIndex++;
             $points = $item->points ?? 0;
 
-            // إذا لم يكن هذا هو العنصر الأول وكانت نقاطه أقل من العنصر السابق، نزيد المركز بناءً على ترتيبه الفعلي
-            if ($index > 0 && $points < $previousPoints) {
-                $currentRank = $index + 1;
+            if ($previousPoints !== null && $points < $previousPoints) {
+                $currentRank = $loopIndex;
             }
             
             $previousPoints = $points;
             $item->calculated_rank = $currentRank;
             $leaderboards[] = $item;
-            $index++;
         }
 
         // 4. جلب كود الفصل حصرياً من مدخلات المعلم أو جلسة تسجيل المعلم
@@ -85,7 +84,7 @@ class TeacherDashboardController extends Controller
         session(['teacher_class_code' => $validated['class_code']]);
         session(['current_teacher_class_code' => $validated['class_code']]);
 
-        // تحديد اللغة الحالية للصفحة (من الجلسة أو الافتراضي عربي)
+        // تحديد اللغة الحالية للصفحة
         $locale = Session::get('locale', 'ar');
 
         // تجهيز رسالة النجاح باللغتين

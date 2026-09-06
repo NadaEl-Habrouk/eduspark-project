@@ -297,7 +297,6 @@
             starContainer.className = isEn ? 'flex items-center space-x-2' : 'flex items-center space-x-2 space-x-reverse';
         }
 
-        // تحديث أزرار تبديل اللغة النشطة بصرياً
         const btnAr = document.getElementById('langArBtn');
         const btnEn = document.getElementById('langEnBtn');
         if (btnAr && btnEn) {
