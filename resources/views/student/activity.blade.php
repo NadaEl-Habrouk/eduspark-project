@@ -357,6 +357,24 @@
             }
             actionBtn.className = 'w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-2xl shadow-lg shadow-amber-500/30 transition-all border border-amber-500/40';
         }
+        // استدِعِ هذه الدالة فوراً عندما تكون إجابة الطالب صحيحة
+function onCorrectAnswer() {
+    fetch('/student/update-score', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log("تم تحديث النقاط بنجاح:", data.points, data.completed_activities);
+            // اختياري: توجيه الطالب للداشبورد بعد إنهاء السؤال أو إظهار رسالة النجاح
+        }
+    })
+    .catch(error => console.error('Error updating score:', error));
+}
     </script>
 </body>
 </html>

@@ -76,25 +76,27 @@
             <div class="absolute top-0 right-0 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
             <div class="absolute bottom-0 left-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
             
-            <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-                <div class="md:col-span-2">
-                    <span id="bannerTag" class="px-3 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold rounded-full inline-block mb-3">Your first step in self-learning starts here 🚀</span>
-                    <h1 id="bannerTitle" class="text-2xl sm:text-3xl font-black text-white leading-tight mb-2">مدرس الحصة غايب؟ استغل وقتك الذكي وابدأ رحلة التطوير!</h1>
-                    <p id="bannerDesc" class="text-slate-300 text-sm leading-relaxed">اختر مسارك أدناه، وانخرط في الأنشطة التفاعلية لترفع نقاط فصلك وتؤكد تميزك كأحد نابغين مدرسة وي للتكنولوجيا التطبيقية.</p>
-                </div>
-                
-                <div class="bg-slate-900/90 border border-slate-700/60 rounded-2xl p-4 flex items-center justify-around text-center backdrop-blur-md shadow-inner">
-                    <div>
-                        <div class="text-2xl font-black text-amber-400 font-mono" id="userPoints">0</div>
-                        <div class="text-[11px] text-slate-400 font-bold mt-0.5" id="pointsLabelText">نقاط الفصل 🏆</div>
-                    </div>
-                    <div class="w-px h-8 bg-slate-800"></div>
-                    <div>
-                        <div class="text-2xl font-black text-emerald-400 font-mono" id="completedCount">0</div>
-                        <div class="text-[11px] text-slate-400 font-bold mt-0.5" id="completedLabelText">أنشطة منجزة ✨</div>
-                    </div>
-                </div>
-            </div>
+          <!-- قسم عرض النقاط والأنشطة -->
+<div class="bg-slate-900/90 border border-slate-700/60 rounded-2xl p-4 flex items-center justify-around text-center backdrop-blur-md shadow-inner">
+    <div>
+        <div class="text-2xl font-black text-amber-400 font-mono" id="userPoints">{{ (int)($userPoints ?? 0) }}</div>
+        <div class="text-[11px] text-slate-400 font-bold mt-0.5" id="pointsLabelText">نقاط الفصل 🏆</div>
+    </div>
+    <div class="w-px h-8 bg-slate-800"></div>
+    <div>
+        <div class="text-2xl font-black text-emerald-400 font-mono" id="completedCount">{{ (int)($completedCount ?? 0) }}</div>
+        <div class="text-[11px] text-slate-400 font-bold mt-0.5" id="completedLabelText">أنشطة منجزة ✨</div>
+    </div>
+</div>
+
+<script>
+    // إجبار المتصفح على إعادة جلب أحدث الأرقام من قاعدة البيانات عند العودة للداشبورد
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+            window.location.reload();
+        }
+    });
+</script>
         </div>
 
         <div>

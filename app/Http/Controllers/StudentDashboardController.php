@@ -16,13 +16,17 @@ class StudentDashboardController extends Controller
             return redirect()->route('login');
         }
 
-        // جلب البيانات من جدول الـ Leaderboard الخاص بفصل الطالب
+        // جلب آخر بيانات الفصل مباشرة من قاعدة البيانات
         $leaderboard = Leaderboard::where('class_code', $classCode)->first();
 
-        $userPoints = $leaderboard ? $leaderboard->points : 0;
-        $completedCount = $leaderboard ? $leaderboard->completed_activities : 0;
+        $userPoints = $leaderboard ? (int)$leaderboard->points : 0;
+        $completedCount = $leaderboard ? (int)$leaderboard->completed_activities : 0;
 
-        return view('student.dashboard', compact('userPoints', 'completedCount'));
+        return response()
+            ->view('student.dashboard', compact('userPoints', 'completedCount'))
+            ->header('Cache-Control', 'no-store, no-cache, must-validate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }
 
     public function updateScore(Request $request)
@@ -33,6 +37,7 @@ class StudentDashboardController extends Controller
             return response()->json(['success' => false, 'message' => 'Class code not found'], 400);
         }
 
+        // إيجاد السجل أو إنشائه بـ 0 إذا لم يكن موجوداً
         $leaderboard = Leaderboard::firstOrCreate(
             ['class_code' => $classCode],
             [
@@ -41,13 +46,17 @@ class StudentDashboardController extends Controller
             ]
         );
 
+        // إضافة الزيادة بغض النظر عن القيمة الحالية
         $leaderboard->increment('points', 10);
         $leaderboard->increment('completed_activities', 1);
 
+        // جلب البيانات بعد الزيادة للتأكد من دقتها
+        $leaderboard->refresh();
+
         return response()->json([
             'success' => true,
-            'points' => $leaderboard->points,
-            'completed_activities' => $leaderboard->completed_activities
+            'points' => (int)$leaderboard->points,
+            'completed_activities' => (int)$leaderboard->completed_activities
         ]);
     }
 }
