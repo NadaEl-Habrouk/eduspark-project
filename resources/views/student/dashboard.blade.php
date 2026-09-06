@@ -158,106 +158,113 @@
     </footer>
 
     <script>
-        @if(session('user_name'))
-            const savedLang = localStorage.getItem('eduspark_lang') || '{{ session("locale", "ar") }}';
-            localStorage.setItem('eduspark_session', JSON.stringify({
-                role: "{{ session('role') }}",
-                userName: "{{ session('user_name') }}",
-                classCode: "{{ session('class_code') }}",
-                language: savedLang
-            }));
-        @endif
+    @if(session('user_name'))
+        const savedLang = localStorage.getItem('eduspark_lang') || '{{ session("locale", "ar") }}';
+        localStorage.setItem('eduspark_session', JSON.stringify({
+            role: "{{ session('role') }}",
+            userName: "{{ session('user_name') }}",
+            classCode: "{{ session('class_code') }}",
+            language: savedLang
+        }));
+    @endif
 
-        document.getElementById('dynamicYear').innerText = new Date().getFullYear();
+    document.getElementById('dynamicYear').innerText = new Date().getFullYear();
 
-        // حل مشكلة تعليق الأرقام عند الرجوع للصفحة من الـ Cache للمتصفح
-        window.addEventListener('pageshow', function (event) {
-            if (event.persisted) {
-                window.location.reload();
-            }
-        });
-
-        const dashboardTranslations = {
-            ar: {
-                dir: 'rtl',
-                title: 'EduSpark ⚡ - لوحة تحكم الطالب',
-                greeting: (name) => `أهلاً بك، ${name}`,
-                pointsLabel: 'نقاط الفصل 🏆',
-                completedLabel: 'أنشطة منجزة ✨',
-                bannerTag: 'Your first step in self-learning starts here 🚀',
-                bannerTitle: 'المدرس غايب؟ دي مش حصة ضايعة، دي فرصة تسبق بيها وتطور مهاراتك!',
-                bannerDesc: 'اختر مسارك أدناه، وانخرط في الأنشطة التفاعلية لترفع نقاط فصلك وتؤكد تميزك.',
-                subjectsHeader: 'المسارات التعليمية المتاحة اليوم',
-                cardAction: 'ابدأ التحدي الآن',
-                logoutBtn: 'تسجيل خروج'
-            },
-            en: {
-                dir: 'ltr',
-                title: 'EduSpark ⚡ - Student Dashboard',
-                greeting: (name) => `Welcome, ${name}`,
-                pointsLabel: 'Class Points 🏆',
-                completedLabel: 'Completed ✨',
-                bannerTag: 'Your first step in self-learning starts here 🚀',
-                bannerTitle: 'Teacher absent? That’s not a wasted class; level up your skills!',
-                bannerDesc: 'Choose a path below and start interactive activities to earn points.',
-                subjectsHeader: 'Available Learning Paths',
-                cardAction: 'Start Challenge Now',
-                logoutBtn: 'Logout'
-            }
-        };
-
-        function applyTranslations(lang) {
-            const t = dashboardTranslations[lang];
-            const htmlRoot = document.getElementById('htmlRoot');
-            if(htmlRoot) {
-                htmlRoot.setAttribute('lang', lang);
-                htmlRoot.setAttribute('dir', t.dir);
-            }
-            document.title = t.title;
-            document.getElementById('studentGreeting').innerText = t.greeting(getUserName());
-            document.getElementById('badgeClassCode').innerText = getClassCode() || 'Class';
-            document.getElementById('pointsLabelText').innerText = t.pointsLabel;
-            document.getElementById('completedLabelText').innerText = t.completedLabel;
-            document.getElementById('subjectsHeaderText').innerText = t.subjectsHeader;
-            document.querySelectorAll('.cardActionText').forEach(el => el.innerText = t.cardAction);
-            document.getElementById('langButtonText').innerText = lang === 'ar' ? 'EN' : 'AR';
+    // فرض إعادة التحميل عند العودة للصفحة لضمان جلب آخر قيمة من قاعدة البيانات
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted || window.performance.navigation.type === 2) {
+            window.location.reload();
         }
+    });
 
-        function getUserName() {
-            try {
-                const session = JSON.parse(localStorage.getItem('eduspark_session'));
-                return session ? session.userName : 'بطل';
-            } catch(e) { return 'بطل'; }
+    const dashboardTranslations = {
+        ar: {
+            dir: 'rtl',
+            title: 'EduSpark ⚡ - لوحة تحكم الطالب',
+            greeting: (name) => `أهلاً بك، ${name}`,
+            pointsLabel: 'نقاط الفصل 🏆',
+            completedLabel: 'أنشطة منجزة ✨',
+            bannerTag: 'Your first step in self-learning starts here 🚀',
+            bannerTitle: 'المدرس غايب؟ دي مش حصة ضايعة، دي فرصة تسبق بيها وتطور مهاراتك!',
+            bannerDesc: 'اختر مسارك أدناه، وانخرط في الأنشطة التفاعلية لترفع نقاط فصلك وتؤكد تميزك.',
+            subjectsHeader: 'المسارات التعليمية المتاحة اليوم',
+            cardAction: 'ابدأ التحدي الآن',
+            logoutBtn: 'تسجيل خروج'
+        },
+        en: {
+            dir: 'ltr',
+            title: 'EduSpark ⚡ - Student Dashboard',
+            greeting: (name) => `Welcome, ${name}`,
+            pointsLabel: 'Class Points 🏆',
+            completedLabel: 'Completed ✨',
+            bannerTag: 'Your first step in self-learning starts here 🚀',
+            bannerTitle: 'Teacher absent? That’s not a wasted class; level up your skills!',
+            bannerDesc: 'Choose a path below and start interactive activities to earn points.',
+            subjectsHeader: 'Available Learning Paths',
+            cardAction: 'Start Challenge Now',
+            logoutBtn: 'Logout'
         }
+    };
 
-        function getClassCode() {
-            try {
-                const session = JSON.parse(localStorage.getItem('eduspark_session'));
-                return session ? session.classCode : '';
-            } catch(e) { return ''; }
+    function applyTranslations(lang) {
+        const t = dashboardTranslations[lang];
+        const htmlRoot = document.getElementById('htmlRoot');
+        if(htmlRoot) {
+            htmlRoot.setAttribute('lang', lang);
+            htmlRoot.setAttribute('dir', t.dir);
         }
+        document.title = t.title;
+        document.getElementById('studentGreeting').innerText = t.greeting(getUserName());
+        document.getElementById('badgeClassCode').innerText = getClassCode() || 'Class';
+        document.getElementById('pointsLabelText').innerText = t.pointsLabel;
+        document.getElementById('completedLabelText').innerText = t.completedLabel;
+        document.getElementById('subjectsHeaderText').innerText = t.subjectsHeader;
+        document.querySelectorAll('.cardActionText').forEach(el => el.innerText = t.cardAction);
+        document.getElementById('langButtonText').innerText = lang === 'ar' ? 'EN' : 'AR';
+    }
 
-        function toggleLanguage() {
-            const currentLang = localStorage.getItem('eduspark_lang') || 'ar';
-            const newLang = currentLang === 'ar' ? 'en' : 'ar';
-            localStorage.setItem('eduspark_lang', newLang);
-            applyTranslations(newLang);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
+    function getUserName() {
+        try {
             const session = JSON.parse(localStorage.getItem('eduspark_session'));
-            if (!session || session.role !== 'student') {
-                window.location.href = "{{ route('login') }}"; 
-                return;
-            }
-            const lang = session.language || localStorage.getItem('eduspark_lang') || 'ar';
-            applyTranslations(lang);
-        });
+            return session ? session.userName : 'بطل';
+        } catch(e) { return 'بطل'; }
+    }
 
-        function selectSubject(subjectKey) {
-            localStorage.setItem('selected_subject', subjectKey);
-            window.location.href = `/student/activity/${subjectKey}/solo`;
+    function getClassCode() {
+        try {
+            const session = JSON.parse(localStorage.getItem('eduspark_session'));
+            return session ? session.classCode : '';
+        } catch(e) { return ''; }
+    }
+
+    function toggleLanguage() {
+        const currentLang = localStorage.getItem('eduspark_lang') || 'ar';
+        const newLang = currentLang === 'ar' ? 'en' : 'ar';
+        localStorage.setItem('eduspark_lang', newLang);
+        applyTranslations(newLang);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const session = JSON.parse(localStorage.getItem('eduspark_session'));
+        if (!session || session.role !== 'student') {
+            window.location.href = "{{ route('login') }}"; 
+            return;
         }
-    </script>
+        const lang = session.language || localStorage.getItem('eduspark_lang') || 'ar';
+        applyTranslations(lang);
+
+        // التأكد من جلب قيم السيرفر الحقيقية وعرضها مباشرة بدون تداخل الـ localStorage القديم
+        const pointsEl = document.getElementById('userPoints');
+        const completedEl = document.getElementById('completedCount');
+        
+        if (pointsEl) pointsEl.innerText = "{{ isset($userPoints) ? $userPoints : 0 }}";
+        if (completedEl) completedEl.innerText = "{{ isset($completedCount) ? $completedCount : 0 }}";
+    });
+
+    function selectSubject(subjectKey) {
+        localStorage.setItem('selected_subject', subjectKey);
+        window.location.href = `/student/activity/${subjectKey}/solo`;
+    }
+</script>
 </body>
 </html>
