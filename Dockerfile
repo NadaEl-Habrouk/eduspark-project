@@ -25,11 +25,15 @@ WORKDIR /var/www/html
 # Copy existing application directory contents
 COPY . /var/www/html
 
+# Set permissions for Laravel storage and cache directories
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
 # Install composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 
 # Expose port for Railway
 EXPOSE 8080
 
-# Start Laravel built-in development server
-CMD php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
+# Clear config and cache on startup, then start server
+CMD php artisan config:clear && php artisan cache:clear && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
