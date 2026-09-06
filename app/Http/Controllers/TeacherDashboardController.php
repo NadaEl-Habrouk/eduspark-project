@@ -9,63 +9,33 @@ use Illuminate\Support\Facades\Session;
 
 class TeacherDashboardController extends Controller
 {
-    public function index(Request $request)
+   public function index()
     {
-        // 1. جلب اسم المعلم المسجل
-        $teacherName = session('user_name') ?? session('full_student_name', 'Nada Saad');
-
-        // 2. جلب جميع الفصول وترتيبها تنازلياً حسب النقاط للـ Leaderboard
+        // جلب جميع الفصول وترتيبها تنازلياً حسب النقاط
         $rawLeaderboards = Leaderboard::orderBy('points', 'desc')->get();
 
-        // 3. حساب المراكز (Competition Ranking: 1, 2, 2, 3) بحيث يأخذ الفصل التالي المركز الثالث
+        // حساب المراكز بحيث يكون الفصل التالي بعد المتساويين هو المركز الصحيح (1, 2, 2, 3)
         $leaderboards = [];
         $currentRank = 1;
-        $previousPoints = null;
-        $loopIndex = 0;
-
-        foreach ($rawLeaderboards as $item) {
-            $loopIndex++;
-            $points = $item->points ?? 0;
-
-            if ($previousPoints !== null && $points < $previousPoints) {
-                $currentRank = $loopIndex;
+        
+        foreach ($rawLeaderboards as $index => $item) {
+            // إذا لم يكن العنصر الأول، نقارن نقاطه بالعنصر السابق
+            if ($index > 0) {
+                $prevItem = $rawLeaderboards[$index - 1];
+                // إذا كانت النقاط أقل من العنصر السابق، يصبح المركز هو ترتيب العنصر الحالي (index + 1)
+                if ($item->points < $prevItem->points) {
+                    $currentRank = $index + 1;
+                }
+                // وإذا كانت النقاط متساوية، سيحتفظ بنفس $currentRank للسابق
             }
             
-            $previousPoints = $points;
             $item->calculated_rank = $currentRank;
             $leaderboards[] = $item;
         }
 
-        // 4. جلب كود الفصل حصرياً من مدخلات المعلم أو جلسة تسجيل المعلم
-        $targetClassCode = $request->input('class_code') ?? session('class_code');
-
-        // 5. البحث عن بيانات الفصل المدخل من قِبل المعلم فقط
-        $selectedClassData = null;
-        if (!empty($targetClassCode)) {
-            $selectedClassData = collect($leaderboards)->first(function ($item) use ($targetClassCode) {
-                return strcasecmp($item->class_code ?? $item->code ?? '', $targetClassCode) === 0;
-            });
-        }
-
-        // 6. جلب الأنشطة والحصص الخاصة بهذا الفصل فقط
-        $totalActivities = $selectedClassData ? ($selectedClassData->completed_activities ?? 0) : 0;
-        
-        $activeClassesCount = 0;
-        if (!empty($targetClassCode)) {
-            $activeClassesCount = Evaluation::where('class_code', $targetClassCode)->count();
-            if ($activeClassesCount === 0 && $selectedClassData) {
-                $activeClassesCount = 1; 
-            }
-        }
-
-        return view('teacher.dashboard', compact(
-            'leaderboards', 
-            'teacherName', 
-            'activeClassesCount', 
-            'totalActivities',
-            'targetClassCode'
-        ));
+        return view('leaderboard.index', compact('leaderboards'));
     }
+
 
     public function storeEvaluation(Request $request)
     {
