@@ -17,16 +17,15 @@ class TeacherDashboardController extends Controller
         // 2. جلب جميع الفصول وترتيبها تنازلياً حسب النقاط للـ Leaderboard
         $rawLeaderboards = Leaderboard::orderBy('points', 'desc')->get();
 
-        // 3. حساب المراكز بحيث يكون الفصل التالي بعد المتساويين هو المركز الصحيح (1, 2, 2, 3)
+        // 3. حساب المراكز بطريقة الـ Dense Ranking الصحيحة (1, 2, 2, 3)
         $leaderboards = [];
-        $currentRank = 1;
+        $currentRank = 0;
+        $lastPoints = null;
         
-        foreach ($rawLeaderboards as $index => $item) {
-            if ($index > 0) {
-                $prevItem = $rawLeaderboards[$index - 1];
-                if ($item->points < $prevItem->points) {
-                    $currentRank = $index + 1;
-                }
+        foreach ($rawLeaderboards as $item) {
+            if ($lastPoints === null || $item->points < $lastPoints) {
+                $currentRank++;
+                $lastPoints = $item->points;
             }
             
             $item->calculated_rank = $currentRank;
