@@ -210,7 +210,7 @@
                 greeting: (name) => `أهلاً بك، ${name}`,
                 pointsLabel: 'نقاط الفصل 🏆',
                 completedLabel: 'أنشطة منجزة ✨',
-                bannerTag: 'خطوتك الأولى في التعلم الذاتي تبدأ من هنا 🚀',
+                bannerTag: 'Your first step in self-learning starts here 🚀',
                 bannerTitle: 'المدرس غايب؟ دي مش حصة ضايعة، دي فرصة تسبق بيها وتطور مهاراتك!',
                 bannerDesc: 'اختر مسارك أدناه، وانخرط في الأنشطة التفاعلية لترفع نقاط فصلك وتؤكد تميزك كأحد نابغين مدرسة وي للتكنولوجيا التطبيقية.',
                 subjectsHeader: 'المسارات التعليمية المتاحة اليوم',
