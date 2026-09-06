@@ -18,6 +18,7 @@ class StudentDashboardController extends Controller
 
         $leaderboard = Leaderboard::where('class_code', $classCode)->first();
 
+        // تمرير القيم صراحة حتى لو كانت صفراً
         $userPoints = $leaderboard ? $leaderboard->points : 0;
         $completedCount = $leaderboard ? $leaderboard->completed_activities : 0;
 
