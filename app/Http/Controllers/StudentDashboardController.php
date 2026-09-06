@@ -8,27 +8,21 @@ use App\Models\Leaderboard;
 class StudentDashboardController extends Controller
 {
     public function index()
-    {
-        $userName = session('user_name');
-        $classCode = session('class_code');
+{
+    $user = auth()->user();
+    $classCode = $user->class_code ?? 'GENERAL_CLASS';
 
-        if (!$userName || !$classCode) {
-            return redirect()->route('login');
-        }
+    // جلب أو إنشاء سجل المتصدرين لهذا الفصل ليبدأ دائماً من 0
+    $leaderboard = Leaderboard::firstOrCreate(
+        ['class_code' => $classCode],
+        [
+            'points' => 0,
+            'completed_activities' => 0
+        ]
+    );
 
-        // جلب البيانات من جدول الـ Leaderboard الخاص بفصل الطالب مباشرة
-        $leaderboard = Leaderboard::where('class_code', $classCode)->first();
-
-        $userPoints = $leaderboard ? (int)$leaderboard->points : 0;
-        $completedCount = $leaderboard ? (int)$leaderboard->completed_activities : 0;
-
-        // إرجاع الصفحة مع منع التخزين المؤقت (Cache) لضمان تحديث الأرقام فوراً
-        return response()
-            ->view('student.dashboard', compact('userPoints', 'completedCount'))
-            ->header('Cache-Control', 'no-store, no-cache, must-validate, max-age=0')
-            ->header('Pragma', 'no-cache')
-            ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
-    }
+    return view('student.dashboard', compact('leaderboard'));
+}
 
    public function updateScore(Request $request)
 {

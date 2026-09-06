@@ -279,8 +279,33 @@
         }
 
         // 🌟 دالة إرسال النقاط وتحديثها في قاعدة البيانات السيرفر عند الإجابة الصحيحة
-        function updateScoreOnServer(questionId) {
-            fetch("{{ route('student.leaderboard.update') }}", {
+function updateScoreOnServer(questionId) {
+    fetch("{{ route('student.leaderboard.update') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ question_id: questionId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            // تحديث النقاط على الشاشة فوراً
+            const pointsEl = document.getElementById('userPoints');
+            if (pointsEl) {
+                pointsEl.innerText = data.points;
+            }
+
+            // تحديث عدد الأنشطة المنجزة على الشاشة فوراً
+            const completedEl = document.getElementById('completedCount');
+            if (completedEl && data.completed_activities !== undefined) {
+                completedEl.innerText = data.completed_activities;
+            }
+        }
+    })
+    .catch(error => console.error('Error recording score:', error));
+}            fetch("{{ route('student.leaderboard.update') }}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
